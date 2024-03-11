@@ -45,7 +45,7 @@ var logic = (function () {
 
         // TODO input validation
 
-        var user = data.findUser(function (user) {
+        var user = data.users.findOne(function (user) {
             return user.email === email || user.username === username
         })
 
@@ -60,14 +60,14 @@ var logic = (function () {
             status: 'offline',
         }
 
-        data.insertUser(user)
+        data.users.insertOne(user)
     }
 
     function loginUser(username, password) {
         validateText(username, 'username', true)
         validatePassword(password, 'password')
 
-        var user = data.findUser(function (user) {
+        var user = data.users.findOne(function (user) {
             return user.username === username && user.password === password
         })
 
@@ -75,13 +75,13 @@ var logic = (function () {
 
         user.status = 'online'
 
-        data.updateUser(user)
+        data.users.updateOne(user)
 
         sessionStorage.userId = user.id
     }
 
     function retrieveUser() {
-        var user = data.findUser(function (user) {
+        var user = data.users.findOne(function (user) {
             return user.id === sessionStorage.userId
         })
 
@@ -91,7 +91,7 @@ var logic = (function () {
     }
 
     function logoutUser() {
-        var user = data.findUser(function (user) {
+        var user = data.users.findOne(function (user) {
             return user.id === sessionStorage.userId
         })
 
@@ -99,7 +99,7 @@ var logic = (function () {
 
         user.status = 'offline'
 
-        data.updateUser(user)
+        data.users.updateOne(user)
 
         delete sessionStorage.userId
     }
@@ -112,8 +112,8 @@ var logic = (function () {
         return !!sessionStorage.userId
     }
 
-    function retrieveUsers() {
-        var users = data.getAllUsers()
+    function retrieveUsersWithStatus() {
+        var users = data.users.getAll()
 
         var index = users.findIndex(function (user) {
             return user.id === sessionStorage.userId
@@ -138,6 +138,48 @@ var logic = (function () {
         return users
     }
 
+    function sendMessageToUser(userId, text) {
+        validateText(userId, 'userId', true)
+        validateText(text, 'text')
+
+        // { id, users: [id, id], messages: [{ from: id, text, date }, { from: id, text, date }, ...] }
+
+        // find chat in chats (by user ids)
+        // if no chat yet, then create it
+        // add message in chat
+        // update or insert chat in chats
+        // save chats
+
+        var chat = data.chats.findOne(function (chat) {
+            return chat.users.includes(userId) && chat.users.includes(sessionStorage.userId)
+        })
+
+        if (!chat)
+            chat = { users: [userId, sessionStorage.userId], messages: [] }
+
+        var message = { from: sessionStorage.userId, text: text, date: new Date().toISOString() }
+
+        chat.messages.push(message)
+
+        if (!chat.id)
+            data.insertChat(chat)
+        else
+            data.updateChat(chat)
+    }
+
+    function retrieveMessagesWithUser(userId) {
+        validateText(userId, 'userId', true)
+
+        var chat = data.chats.findOne(function (chat) {
+            return chat.users.includes(userId) && chat.users.includes(sessionStorage.userId)
+        })
+
+        if (chat)
+            return chat.messages
+
+        return []
+    }
+
     function createPost(image, text) {
         validateUrl(image, 'image')
 
@@ -151,14 +193,14 @@ var logic = (function () {
             date: new Date().toLocaleDateString('en-CA')
         }
 
-        data.insertPost(post)
+        data.posts.insertOne(post)
     }
 
     function retrievePosts() {
-        var posts = data.getAllPosts()
+        var posts = data.posts.getAll()
 
         posts.forEach(function (post) {
-            var user = data.findUser(function (user) {
+            var user = data.users.findOne(function (user) {
                 return user.id === post.author
             })
 
@@ -171,7 +213,7 @@ var logic = (function () {
     function removePost(postId) {
         validateText(postId, 'postId', true)
 
-        var post = data.findPost(function (post) {
+        var post = data.posts.findOne(function (post) {
             return post.id === postId
         })
 
@@ -184,6 +226,23 @@ var logic = (function () {
         })
     }
 
+    function modifyPost(postId, text) {
+        validateText(postId, 'postId', true)
+        validateText(text, 'text')
+
+        var post = data.posts.findOne(function (post) {
+            return post.id === postId
+        })
+
+        if (!post) throw new Error('post not found')
+
+        if (post.author !== sessionStorage.userId) throw new Error('post does not belong to user')
+
+        post.text = text
+
+        data.posts.updateOne(post)
+    }
+
     return {
         registerUser: registerUser,
         loginUser: loginUser,
@@ -191,9 +250,14 @@ var logic = (function () {
         logoutUser: logoutUser,
         getLoggedInUserId: getLoggedInUserId,
         isUserLoggedIn: isUserLoggedIn,
-        retrieveUsers: retrieveUsers,
+
+        retrieveUsersWithStatus: retrieveUsersWithStatus,
+        sendMessageToUser: sendMessageToUser,
+        retrieveMessagesWithUser: retrieveMessagesWithUser,
+
         createPost: createPost,
         retrievePosts: retrievePosts,
-        removePost: removePost
+        removePost: removePost,
+        modifyPost: modifyPost
     }
 })()

@@ -1,3 +1,4 @@
+
 // presentation
 
 (function () {
@@ -135,7 +136,7 @@
         userList.innerHTML = ''
 
         try {
-            var users = logic.retrieveUsers()
+            var users = logic.retrieveUsersWithStatus()
 
             users.forEach(function (user) {
                 var item = document.createElement('li')
