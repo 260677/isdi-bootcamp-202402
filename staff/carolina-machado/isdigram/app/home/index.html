@@ -6,51 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
-    <main>
-        <h1>Hello, World!</h1>
-        <nav id="menu-nav">
-            <button id="home-button">🏚️</button>
-            <button id="chat-button">💬</button>
-            <button id="logout-button">🚪</button>
-        </nav>
-
-        <section id="post-list-section"></section>
-
-        <section id="chat-section">
-            <ul id="user-list"></ul>
-        </section>
-
-        <section id="create-post-section">
-            <h2>Create Post</h2>
-
-            <form>
-                <label for="image">Image</label>
-                <input type="text" id="image">
-
-                <label for="text">Text</label>
-                <input type="text" id="text">
-
-                <button type="submit">Create</button>
-            </form>
-
-            <button id="create-post-cancel-button">Cancel</button>
-        </section>
-    </main>
-
-    <footer id="footer">
-        <button id="create-post-button">+</button>
-    </footer>
-
-    <script src="../data/Collection.js"></script>
-    <script src="../data/index.js"></script>
-
-    <script src="../logic.js"></script>
-
-    <script src="index.js"></script>
+    <script type="module" src="./index.mjs"></script>
 </body>
 
 </html>
