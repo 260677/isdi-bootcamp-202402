@@ -145,17 +145,38 @@ function retrieveUser(userId, callback) {
     })
 }
 
-function logoutUser() {
-    const user = db.users.findOne(user => user.id === sessionStorage.userId)
+function logoutUser(userId, callback) {
+    validateText(userId, 'userId', true)
+    validateCallback(callback)
 
-    if (!user) throw new Error('user not found')
+    db.users.findOne(user => user.id === userId, (error, user) => {
+        if (error) {
+            callback(error)
 
-    user.status = 'offline'
+            return
+        }
 
-    db.users.updateOne(user)
+        if (!user) {
+            call(new Error('user not found'))
 
-    delete sessionStorage.userId
+            return
+
+        }
+
+        user.status = 'offline'
+
+        db.users.updateOne(user2 => user2.id === user.id, user, error => {
+            if (error) {
+                callback(error)
+
+                return
+            }
+
+            callback(null, user.id)
+        })
+    })
 }
+
 
 function getLoggedInUserId() {
     return sessionStorage.userId
@@ -306,3 +327,4 @@ const logic = {
 }
 
 export default logic
+
