@@ -1,5 +1,7 @@
+//@ts-nocheck
+
 import express from 'express'
-import logic from './logic/index.mjs'
+import logic from './logic/index.ts'
 
 const api = express()
 
@@ -94,22 +96,23 @@ api.get("/users/:userId", jsonBodyParser, (req, res) => {
 
 // Logout User:
 
-api.post('/users/logout/:userId', jsonBodyParser, (req, res) => {
-    try {
-    
-        logic.logoutUser(req.params.userId, error => {
-            if (error) {
-                res.status(400).json({ error: error.constructor.name, message: error.message });
-                return;
-            }
+api.patch("/users/:userId", jsonBodyParser, (req, res) => {
+  logic.logoutUser(req.params.userId, (error, user) => {
+    if (error) {
+      res
+        .status(400)
+        .json({ error: error.constructor.name, message: error.message });
 
-         
-            res.status(200).json({ message: 'User logged out successfully' });
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.constructor.name, message: 'Internal server error' });
+      return;
     }
+    if (!user) {
+      res.status(404);
+    } else {
+      res.status(200).json(user.status);
+    }
+  });
 });
+
 
 
 api.listen(8080, () => console.log('API listening on port 8080'))

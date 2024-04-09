@@ -1,11 +1,12 @@
-import db from '../data/index.mjs'
-import logic from './index.mjs'
+import db from '../data/index.ts'
+import logic from './index.ts'
 
 import { expect } from 'chai'
 
 describe('logic', () => {
     describe('registerUser', () => {
         it('succeeds a new user', done => {
+            debugger
             db.users.deleteOne(user => user.username === 'peperoni', error => {
                 if (error) {
                     done(error)

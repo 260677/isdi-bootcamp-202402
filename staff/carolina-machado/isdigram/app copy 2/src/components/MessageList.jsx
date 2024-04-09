@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import utils from '../utils.mjs';
+import utils from '../utils'
 import logic from '../logic.mjs';
 
 class MessageList extends Component {
@@ -63,6 +63,6 @@ class MessageList extends Component {
     }
 }
 
-MessageList.active = false;
+//MessageList.active = false;
 
 export default MessageList;

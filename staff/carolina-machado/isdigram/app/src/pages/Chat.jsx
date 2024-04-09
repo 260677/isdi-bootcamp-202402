@@ -1,86 +1,79 @@
-import React, { Component } from 'react'; // Import React and Component
-import { showFeedback } from '../utils'; // Import showFeedback from utils
-import logic from '../logic.mjs'; // Import logic from logic.mjs
-import MessageForm from '../../components/MessageForm'; // Import MessageForm
-import MessageList from '../../components/MessageList';
+import React, { useState } from 'react'; // Import React and useState
+import MessageForm from '../components/MessageForm'; // Import MessageForm
+import logic from '../logic'; // Import your logic module
+import { showFeedback } from '../utils'; // Import showFeedback
 
-class Chat extends Component {
-    constructor() {
-        super();
+function Chat(props) {
+    const [view, setView] = useState(null);
+    const [users, setUsers] = useState(null);
+    const [user, setUser] = useState(null);
+    const [showMessageForm, setShowMessageForm] = useState(false);
 
-        try {
-            const users = logic.retrieveUsersWithStatus();
-            const user = logic.retrieveUser();
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const users = await logic.retrieveUser();
+                setUsers(users);
+            } catch (error) {
+                showFeedback(error);
+            }
+        };
 
-            this.user = user;
-            this.users = users;
-            this.state = {
-                users,
-                view: null,
-                showMessageForm: false, // Add this line
-            };
-        } catch (error) {
-            showFeedback(error);
-        }
-    }
+        fetchUsers();
+    }, []);
 
-    onUserClick = () => {
-        this.setState((prevState) => ({
+    const onUserClick = () => {
+        setView((prevState) => ({
             view: prevState.view === 'message-form' ? null : 'message-form',
             showMessageForm: !prevState.showMessageForm,
         }));
     };
 
-    render() {
-        return (
-            <main className="chat">
-                <h1>Hello, {this.user.name}!</h1>
+    return (
+        <main className="chat">
+            {user && <h1>Hello, {user.name}!</h1>}
 
-                <nav>
-                    <button
-                        onClick={(event) => {
-                            event.preventDefault();
-                            this.props.onHomeClick();
-                        }}
-                    >
-                        🏡
-                    </button>
-                    <button
-                        onClick={(event) => {
-                            event.preventDefault();
-                            logic.logoutUser();
-                            this.props.onLogoutChatClick();
-                        }}
-                    >
-                        🚪
-                    </button>
-                </nav>
+            <nav>
+                <button
+                    onClick={(event) => {
+                        event.preventDefault();
+                        props.onHomeClick();
+                    }}
+                >
+                    🏡
+                </button>
+                <button
+                    onClick={(event) => {
+                        event.preventDefault();
+                        logic.logoutUser();
+                        props.onLogoutChatClick();
+                    }}
+                >
+                    🚪
+                </button>
+            </nav>
 
-                <section>
-                    <ul>
-                        {this.state.users.map((user) => {
-                            const listItemClass =
-                                user.status === 'online'
-                                    ? 'user-list__item--online'
-                                    : 'user-list__item--offline';
+            <section>
+                <ul>
+                    {users.map((userItem) => {
+                        const listItemClass =
+                            userItem.status === 'online'
+                                ? 'user-list__item--online'
+                                : 'user-list__item--offline';
 
-                            return (
-                                <li
-                                    key={user.id}
-                                    className={listItemClass}
-                                    onClick={this.onUserClick}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    {user.username}
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    {this.state.showMessageForm && <MessageForm />} {/* Show MessageForm if showMessageForm is true */}
-                </section>
-            </main>
-        );
-    }
+                        return (
+                            <li key={userItem.id} className={listItemClass}>
+                                {/* Render user details */}
+                            </li>
+                        );
+                    })}
+                </ul>
+            </section>
+        </main>
+    );
 }
 
-export default Chat // Export Chat component as default
+
+export default Chat
+
+
