@@ -1,4 +1,6 @@
-import db from './data/index.mjs'
+//@ts-nocheck
+
+import db from '../data/index.ts'
 
 // constants
 
@@ -9,7 +11,7 @@ const URL_REGEX = /^(http|https):\/\//
 
 // helpers
 
-function validateText(text, explain = 'text', checkEmptySpaceInside) {
+function validateText(text, explain, checkEmptySpaceInside?) {
     if (typeof text !== 'string') throw new TypeError(explain + ' ' + text + ' is not a string')
     if (!text.trim().length) throw new Error(explain + ' >' + text + '< is empty or blank')
 
@@ -17,21 +19,21 @@ function validateText(text, explain = 'text', checkEmptySpaceInside) {
         if (text.includes(' ')) throw new Error(explain + ' ' + text + ' has empty spaces')
 }
 
-function validateDate(date, explain = 'date') {
-    if (typeof date !== 'string') throw new TypeError(`${explain} is not a string`)
-    if (!DATE_REGEX.test(date)) throw new Error(`${explain} does not have a valid format`)
+function validateDate(date, explain) {
+    if (typeof date !== 'string') throw new TypeError(explain + ' ' + date + ' is not a string')
+    if (!DATE_REGEX.test(date)) throw new Error(explain + ' ' + date + ' does not have a valid format')
 }
 
 function validateEmail(email, explain = 'email') {
-    if (!EMAIL_REGEX.test(email)) throw new Error(`${explain} is not an email`)
+    if (!EMAIL_REGEX.test(email)) throw new Error(`${explain} ${email} is not an email`)
 }
 
 function validatePassword(password, explain = 'password') {
-    if (!PASSWORD_REGEX.test(password)) throw new Error(`${explain} is not valid`)
+    if (!PASSWORD_REGEX.test(password)) throw new Error(`${explain} password is not acceptable`)
 }
 
-function validateUrl(url, explain = 'url') {
-    if (!URL_REGEX.test(url)) throw new Error(`${explain} is not a url`)
+function validateUrl(url, explain) {
+    if (!URL_REGEX.test(url)) throw new Error(explain + ' ' + url + ' is not an url')
 }
 
 function validateCallback(callback, explain = 'callback') {
@@ -48,37 +50,38 @@ function registerUser(name, birthdate, email, username, password, callback) {
     validatePassword(password)
     validateCallback(callback)
 
-    var xhr = new XMLHttpRequest
-
-    xhr.onload = function () {
-        const { status, responseText: json } = xhr
-
-        if (status >= 500) {
-            callback(new Error('system error'))
+    db.users.findOne(user => user.email === email || user.username === username, (error, user) => {
+        if (error) {
+            callback(error)
 
             return
-        } else if (status >= 400) { // 400 - 499
-            const { error, message } = JSON.parse(json)
+        }
 
-            const constructor = window[error]
-
-            callback(new constructor(message))
-        } else if (status >= 300) {
-            callback(new Error('system error'))
+        if (user) {
+            callback(new Error('user already exists'))
 
             return
-        } else callback(null)
-    }
+        }
 
-    xhr.open('POST', 'http://localhost:8080/users')
+        user = {
+            name: name.trim(),
+            birthdate: birthdate,
+            email: email,
+            username: username,
+            password: password,
+            status: 'offline',
+        }
 
-    xhr.setRequestHeader('Content-Type', 'application/json')
+        db.users.insertOne(user, error => {
+            if (error) {
+                callback(error)
 
-    const user = { name, birthdate, email, username, password }
+                return
+            }
 
-    const json = JSON.stringify(user)
-
-    xhr.send(json)
+            callback(null)
+        })
+    })
 }
 
 function loginUser(username, password, callback) {
@@ -86,78 +89,65 @@ function loginUser(username, password, callback) {
     validatePassword(password)
     validateCallback(callback)
 
-    var xhr = new XMLHttpRequest
-
-    xhr.onload = function () {
-        const { status, responseText: json } = xhr
-
-        if (status >= 500) {
-            callback(new Error('system error'))
+    db.users.findOne(user => user.username === username, (error, user) => {
+        if (error) {
+            callback(error)
 
             return
-        } else if (status >= 400) { // 400 - 499
-            const { error, message } = JSON.parse(json)
-
-            const constructor = window[error]
-
-            callback(new constructor(message))
-        } else if (status >= 300) {
-            callback(new Error('system error'))
-
-            return
-        } else {
-            const userId = JSON.parse(json)
-
-            sessionStorage.userId = userId
-
-            callback(null)
         }
-    }
 
-    xhr.open('POST', 'http://localhost:8080/users/auth')
+        if (!user) {
+            callback(new Error('user not found'))
 
-    xhr.setRequestHeader('Content-Type', 'application/json')
+            return
+        }
 
-    const user = { username, password }
+        if (user.password !== password) {
+            callback(new Error('wrong password'))
 
-    const json = JSON.stringify(user)
+            return
+        }
 
-    xhr.send(json)
+        user.status = 'online'
+
+        db.users.updateOne(user2 => user2.id === user.id, user, error => {
+            if (error) {
+                callback(error)
+
+                return
+            }
+
+            callback(null, user.id)
+        })
+    })
 }
 
-function retrieveUser(callback) {
+function retrieveUser(userId, callback) {
+    validateText(userId, 'userId', true)
     validateCallback(callback)
 
-    var xhr = new XMLHttpRequest
-
-    xhr.onload = function () {
-        const { status, responseText: json } = xhr
-
-        if (status >= 500) {
-            callback(new Error('system error'))
+    db.users.findOne(user => user.id === userId, (error, user) => {
+        if (error) {
+            callback(error)
 
             return
-        } else if (status >= 400) { // 400 - 499
-            const { error, message } = JSON.parse(json)
-
-            const constructor = window[error]
-
-            callback(new constructor(message))
-        } else if (status >= 300) {
-            callback(new Error('system error'))
-
-            return
-        } else {
-            const user = JSON.parse(json)
-
-            callback(null, user)
         }
-    }
 
-    xhr.open('GET', `http://localhost:8080/users/${sessionStorage.userId}`)
+        if (!user) {
+            callback(new Error('user not found'))
 
-    xhr.send()
+            return
+        }
+
+        delete user.id
+        delete user.password
+        delete user.status
+
+        callback(null, user)
+    })
 }
+
+// TODO next ...
 
 function logoutUser() {
     const user = db.users.findOne(user => user.id === sessionStorage.userId)
@@ -167,20 +157,6 @@ function logoutUser() {
     user.status = 'offline'
 
     db.users.updateOne(user)
-
-    delete sessionStorage.userId
-}
-
-function getLoggedInUserId() {
-    return sessionStorage.userId
-}
-
-function isUserLoggedIn() {
-    return !!sessionStorage.userId
-}
-
-function cleanUpLoggedInUserId() {
-    delete sessionStorage.userId
 }
 
 function retrieveUsersWithStatus() {
@@ -244,7 +220,7 @@ function retrieveMessagesWithUser(userId) {
 
     return []
 }
-
+/*
 function createPost(image, text) {
     validateUrl(image, 'image')
 
@@ -260,41 +236,94 @@ function createPost(image, text) {
 
     db.posts.insertOne(post)
 }
+*/
 
-function retrievePosts(callback) {
-    validateCallback(callback)
+function createPost(image, text) {
+    validateUrl(image, 'image')
+    validateText(text, 'text')
 
-    var xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        const { status, responseText: json } = xhr
+    if (error) {
+        callback(error)
 
-        if (status >= 500) {
-            callback(new Error('system error'))
-
-            return
-        } else if (status >= 400) { // 400 - 499
-            const { error, message } = JSON.parse(json)
-
-            const constructor = window[error]
-
-            callback(new constructor(message))
-        } else if (status >= 300) {
-            callback(new Error('system error'))
-
-            return
-        } else {
-            const posts = JSON.parse(json)
-
-            callback(null, posts)
-        }
+        return
     }
 
-    xhr.open('GET', `http://localhost:8080/posts`)
+  
+    const post = {
+        author: sessionStorage.userId,
+        image: image,
+        text: text,
+        date: new Date().toLocaleDateString('en-CA')
+    }
 
-    xhr.setRequestHeader('Authorization', sessionStorage.userId)
+    db.posts.insertOne(post, error => {
+        if (error) {
+            callback(error)
 
-    xhr.send()
+            return
+        }
+
+        callback(null)
+    })
+}
+
+function retrievePosts(userId, callback) {
+    validateText(userId, 'userId', true)
+    validateCallback(callback)
+
+    db.users.findOne(user => user.id === userId, (error, user) => {
+        if (error) {
+            callback(error)
+
+            return
+        }
+
+        if (!user) {
+            callback(new Error('user not found'))
+
+            return
+        }
+
+        db.posts.getAll((error, posts) => {
+            if (error) {
+                callback(error)
+
+                return
+            }
+
+            let count = 0
+            let errorDetected = false
+
+            posts.forEach(post => {
+                db.users.findOne(user => user.id === post.author, (error, user) => {
+                    if (error) {
+                        callback(error)
+
+                        return
+                    }
+
+                    if (!user) {
+                        callback(new Error('post owner not found'))
+
+                        errorDetected = true
+
+                        return
+                    }
+
+                    post.author = {
+                        id: user.id,
+                        username: user.username
+                    }
+
+                    count++
+
+                    if (!errorDetected && count === posts.length)
+                        callback(null, posts.reverse())
+                })
+            })
+        })
+    })
 }
 
 function removePost(postId) {
@@ -329,9 +358,6 @@ const logic = {
     loginUser,
     retrieveUser,
     logoutUser,
-    getLoggedInUserId,
-    isUserLoggedIn,
-    cleanUpLoggedInUserId,
 
     retrieveUsersWithStatus,
     sendMessageToUser,

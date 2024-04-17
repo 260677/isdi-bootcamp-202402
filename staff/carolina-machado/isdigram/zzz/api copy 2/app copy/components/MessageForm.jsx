@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { showFeedback } from '../utils'
-import logic from '../logic.mjs'
-
-
+import { showFeedback } from '../src/utils';
+import logic from '../src/logic.mjs';
+import Chat from '../src/pages/Chat';
+import MessageList from './MessageList';
 
 class MessageForm extends Component {
     constructor(props) {

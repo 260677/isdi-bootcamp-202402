@@ -1,1 +1,1 @@
-curl -X POST -H "Content-Type: application/json" -d '{"author":"a3vc1gsj77c","image":"https://fastly.picsum.photos/id/686/400/400.jpg?hmac=vyAuUfLG282Gnl-ym3_Fh6faAR0mIj5wMllsXnlkTMY","text":"OLA MUNDO","date":"2024-04-08","id":"9h3y4mwgysc"}' http://localhost:8080/posts/ -v
+curl -X POST -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{"image":"https://media.giphy.com/media/vVzH2XY3Y0Ar6/giphy.gif?cid=790b7611eaem0fdtnb9jatl3580dhx03g6jyqulb7oxtjp2n&ep=v1_gifs_trending&rid=giphy.gif&ct=g","text":"am here, am here"}' http://localhost:8080/posts -v

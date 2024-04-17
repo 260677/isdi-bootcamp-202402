@@ -15,17 +15,14 @@ function Register(props) {
         const password = form.password.value
 
         try {
-            logic.registerUser(name, birthdate, email, username, password, error => {
-                if (error) {
-                    showFeedback(error)
+            logic.registerUser(name, birthdate, email, username, password)
+                .then(() => {
+                    form.reset()
 
-                    return
-                }
-
-                form.reset()
-
-                props.onUserRegistered()
-            })
+                    props.onUserRegistered()
+                })
+                //.catch(error => showFeedback(error))
+                .catch(showFeedback)
         } catch (error) {
             showFeedback(error)
         }
@@ -39,10 +36,10 @@ function Register(props) {
 
     logger.debug('Register -> render')
 
-    return <main>
+    return <main className="my-[50px] px-[5vw]">
         <h1>Register</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex flex-col ">
             <label htmlFor="name">Name</label>
             <input type="text" id="name" />
 

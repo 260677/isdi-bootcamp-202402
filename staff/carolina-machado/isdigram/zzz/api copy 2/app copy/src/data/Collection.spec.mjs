@@ -186,6 +186,8 @@ describe('Collection', () => {
             })
         })
 
-        // TODO test all methods
+      
+
+        
     })
 })

@@ -1,0 +1,1 @@
+curl -X POST -H "Content-Type: application/json" -d '{"author":"a3vc1gsj77c","image":"https://fastly.picsum.photos/id/686/400/400.jpg?hmac=vyAuUfLG282Gnl-ym3_Fh6faAR0mIj5wMllsXnlkTMY","text":"OLA MUNDO","date":"2024-04-08","id":"9h3y4mwgysc"}' http://localhost:8080/posts/ -v

@@ -7,7 +7,6 @@ import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
-import Chat from './pages/Chat'
 
 function App() {
   // const viewState = useState(logic.isUserLoggedIn() ? 'home' : 'landing')
@@ -24,8 +23,6 @@ function App() {
   const handleUserLoggedIn = () => setView('home')
 
   const handleUserLoggedOut = () => goToLogin()
-
-  const handleChatClick = () => setView('chat')
 
   logger.debug('App -> render')
 
@@ -44,7 +41,6 @@ function App() {
     {view === 'login' && <Login onRegisterClick={handleRegisterClick} onUserLoggedIn={handleUserLoggedIn} />}
     {view === 'register' && <Register onLoginClick={handleLoginClick} onUserRegistered={handleLoginClick} />}
     {view === 'home' && <Home onUserLoggedOut={handleUserLoggedOut} />}
-    {view === 'chat' && <Chat onChatClick={handleChatClick} />}
   </>
 }
 

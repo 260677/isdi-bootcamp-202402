@@ -14,17 +14,13 @@ function Login(props) {
         logger.debug('Login -> handleSubmit', username, password)
 
         try {
-            logic.loginUser(username, password, error => {
-                if (error) {
-                    showFeedback(error)
+            logic.loginUser(username, password)
+                .then(() => {
+                    form.reset()
 
-                    return
-                }
-
-                form.reset()
-
-                props.onUserLoggedIn()
-            })
+                    props.onUserLoggedIn()
+                })
+                .catch(showFeedback)
         } catch (error) {
             showFeedback(error)
         }
@@ -38,10 +34,10 @@ function Login(props) {
 
     logger.debug('Login -> render')
 
-    return <main>
+    return <main className="my-[50px] px-[5vw]"> 
         <h1>Login</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form  onSubmit={handleSubmit} className="flex flex-col ">
             <label htmlFor="username">Username</label>
             <input id="username" />
 

@@ -12,32 +12,13 @@ function PostList(props) {
         logger.debug('PostList -> loadPosts')
 
         try {
-            logic.retrievePosts((error, posts) => {
-                if (error) {
-                    showFeedback(error)
-
-                    return
-                }
-
-                setPosts(posts)
-            })
+            logic.retrievePosts()
+                .then(setPosts)
+                .catch(showFeedback)
         } catch (error) {
             showFeedback(error)
         }
     }
-
-    // componentWillReceiveProps(newProps) {
-    //     logger.debug('PostList -> componentWillReceiveProps', JSON.stringify(props), JSON.stringify(newProps))
-
-    //     //if (newProps.stamp !== props.stamp) loadPosts()
-    //     newProps.stamp !== props.stamp && this.loadPosts()
-    // }
-
-    // componentDidMount() {
-    //     logger.debug('PostList -> componentDidMount')
-
-    //     this.loadPosts()
-    // }
 
     useEffect(() => {
         loadPosts()

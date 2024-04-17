@@ -15,7 +15,7 @@ function Landing(props) {
 
     logger.debug('Landing -> render')
 
-    return <main>
+    return <main className="my-[50px] px-[5vw]">
         <h1>Landing</h1>
 
         <a href="" onClick={handleLoginClick}>Login</a> or <a href="" onClick={handleRegisterClick}>Register</a>
