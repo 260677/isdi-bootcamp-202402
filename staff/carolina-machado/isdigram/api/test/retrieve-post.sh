@@ -1,1 +1,1 @@
-curl -H "Authorization: Bearer <token>" http://localhost:8080/posts -v
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjFmZWI5MTlhNmE1OTk4MmM2OGFhMmYiLCJpYXQiOjE3MTM0NTI2OTB9.mNlp5EDHmPJwi_HcU-QUDND5OF2D5dJPs2YkyIJBbgQ" http://localhost:8080/posts -v
