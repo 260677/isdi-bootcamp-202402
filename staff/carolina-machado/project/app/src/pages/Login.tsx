@@ -1,34 +1,34 @@
 // @ts-nocheck
-import logic from '../logic'
-
-
 import { logger, showFeedback } from '../utils'
+import logic from '../logic'
+import pics from './pics'
+import Logo from './pics/wiineseekertrans2.png'
 
-function Login({ onUserLogin, onRegisterUser }) {
+function Login({ onUserLoggedIn, onRegisterClick }) {
 
-    const handleSubmit = event  => {
+    const handleSubmit = event => {
         event.preventDefault()
 
-        const form = event.target 
+        const form = event.target
 
-        const username = form.username.value 
-        const password = form.password.value 
+        const email = form.email.value
+        const password = form.password.value
 
         try {
 
-            logic.loginUser(username, password)
+            logic.loginUser(email, password)
                 .then(() => {
 
-                    form.reset 
+                    form.reset
 
                     onUserLoggedIn()
 
                 })
                 .catch(error => showFeedback(error, 'error'))
 
-        
+
         } catch (error) {
-            showFeedback (error)
+            showFeedback(error)
         }
 
 
@@ -41,23 +41,40 @@ function Login({ onUserLogin, onRegisterUser }) {
     }
 
 
-    return <main>
-        <h1>Login</h1>
+    return <>
+        <main className="h-screen flex justify-center flex-col items-center">
+            <div>
+                <img
+                    className="mx-auto w-[300px]"
+                    src={Logo}
+                    alt="logo" />
+            </div>
 
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username</label>
-            <input id="username" />
+            <div>
 
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" />
+                {/*<h1 className="font antialiased text-xl text-fuchsia-800 font-sans font-semibold drop-shadow-"></h1>*/}
 
-            <button type='submit'>Login</button>
+                <form className="bg-white flex flex-col items-center justify-center rounded px-8 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
 
-        </form>
+                    <label className="block text-gray-700 text-ml mb-2 font-semibold" htmlFor="email">E-mail</label>
+                    <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" id="email" />
 
-        <a href="" onClick={handleRegisterClick}>Register</a>
+                    <label className="block text-gray-700 text-ml mb-2 font-semibold" htmlFor="email" htmlFor="password">Password</label>
+                    <input className="shadow appearance-none border border-fuchsia-700 rounded py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" id="password" />
 
-    </main>
+                    <button className="bg-fuchsia-800 hover:bg-purple-900 text-white font- py-2 px-4 rounded focus:outline-none focus:shadow-outline" type='submit'>Login</button>
+
+                    <a href="" className="inline-block align-baseline italic text-sm text-fuchsia-700 hover:text-purple-900" onClick={handleRegisterClick}>Register</a>
+
+                </form>
+
+
+            </div>
+
+
+
+        </main>
+    </>
 }
 
 export default Login

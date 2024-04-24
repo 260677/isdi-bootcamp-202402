@@ -7,10 +7,13 @@
   "scripts": {
     "start": "npx tsx index.ts",
     "inspect": "npx tsx --inspect-brk index.ts",
-    "test": "npx mocha --timeout 10000",
+    "test": "npx mocha",
     "test-inspect": "npx mocha --inspect-brk",
-    "populate": "tsx data/populate.ts"
+    "populate": "tsx data/populate.ts",
+    "populate-wines": "tsx data/populate-wines.ts"
+
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

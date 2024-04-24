@@ -1,8 +1,8 @@
-# WineSeeker App
+# WineSeeker Poblenou App
 
 ## Intro
 
-WineSeeker is a wine searcher app focused mainly in supermarkets and small wine shops. The search includes the wine type (red, white or rosé) and the price range. 
+WineSeeker is a wine searcher app focused mainly in supermarkets and small wine shops around the Poblenou neighboorhood. The search includes the wine type (red, white or rosé) and the price range. 
 
 Throught the app, users can choose the best wine option near them, viewing the supermarket location in an map and the results of the search displayed under it. 
 
@@ -29,7 +29,7 @@ v0.1
 
 ### UI Design
 
-[Figma](https://www.figma.com/file/cw8K38zpv36iQkjQA5fVXC/App?type=design&node-id=0-1&mode=design&t=RHFOp1rBhBeRDwEs-0)
+[Figma] https://www.figma.com/file/tw2wazXlDMn6NxIq3VNC4o/Project-ONE?type=design&node-id=55%3A649&mode=dev&t=M4mmB3qjR3B4kXCZ-1
 
 ## Technical Description
 
@@ -54,29 +54,31 @@ v0.1
 User
 - id (required)
 - name (string, required)
-- birthdate (date, required)
 - email (string, required)
-- username (string, required)
 - password (string, required)
 
-Wines
+Wine
 - id (required)
-- place (Place.id, required)
-- title (string, required)
 - image (string, required)
+- title (string, required)
 - description (string, required)
-- price (number, required)
+- type (string, required, enum: red|white|rose)
 
-Supermarket
+Market
 - id (required)
 - title (string, required)
 - address (string, required)
 - coords ([number, number])
 
+Experience
+- id (requiered)
+- wine (Wine.id, required)
+- market (Market.id, required)
+- price (number, required)
 
 Review
 - id (required)
-- place (Place.id, required)
+- experience (Experience.id, required)
 - user (User.id, required)
 - rate (number, required, enum: 1|2|3|4|5)
 - comment (string, optional)
