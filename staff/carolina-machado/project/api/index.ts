@@ -149,6 +149,44 @@ mongoose.connect(MONGODB_URL)
             }
         })
 
+        api.get('/wines', (req, res) => {
+            try {
+                const { authorization } = req.headers
+
+                const token = authorization.slice(7)
+
+                const { sub: userId } = jwt.verify(token, JWT_SECRET)
+
+                logic.retrieveWines(userId as string)
+                    .then(wines => res.json(wines))
+                    .catch(error => {
+                        if (error instanceof SystemError) {
+                            logger.error(error.message)
+
+                            res.status(500).json({ error: error.constructor.name, message: error.message })
+                        } else if (error instanceof NotFoundError) {
+                            logger.warn(error.message)
+
+                            res.status(404).json({ error: error.constructor.name, message: error.message })
+                        }
+                    })
+            } catch (error) {
+                if (error instanceof TypeError || error instanceof ContentError){
+                    logger.warn(error.message)
+
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+
+                    res.status(498).json({ error: error.constructor.name, message: error.message })
+                } else {
+                    logger.warn(error.message)
+
+                    res.status(500).json({ error: error.constructor.name, message: error.message })
+                }
+            }
+        })
+
         
         // ...
 

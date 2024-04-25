@@ -35,11 +35,12 @@ const user = new Schema ({
 
 type WineType = {
 
-    id: ObjectId
+    
     image: String
     title: String
     description: String
     type: 'red' | 'white' | 'pink'
+    price: Number
 
 }
 

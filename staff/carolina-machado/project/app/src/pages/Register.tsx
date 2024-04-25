@@ -2,7 +2,7 @@
 import { logger, showFeedback } from '../utils'
 import logic from '../logic'
 import pics from './pics'
-import Logo from './pics/wiineseekertrans2.png'
+import Logo from '../img/wiineseekertrans2.png'
 
 function Register({ onUserRegistered, onLoginClick }) {
 
