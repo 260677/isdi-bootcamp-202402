@@ -6,6 +6,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Home from './pages/Home'
+import Header from './components/Header'
 import { errors } from 'com'
 
 const { UnauthorizedError } = errors

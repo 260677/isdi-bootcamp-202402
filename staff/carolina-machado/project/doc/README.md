@@ -63,6 +63,7 @@ Wine
 - title (string, required)
 - description (string, required)
 - type (string, required, enum: red|white|rose)
+- rate (number, required, enum: 1|2|3|4|5)
 
 Market
 - id (required)

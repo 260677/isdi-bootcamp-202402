@@ -1,4 +1,4 @@
-// @ts-nocheck
+// __@ts-nocheck
 import mongoose, { ObjectId } from 'mongoose'
 
 const { Schema, model } = mongoose
@@ -6,89 +6,65 @@ const { Schema, model } = mongoose
 const { Types: { ObjectId } } = Schema
 
 type UserType = {
-
     name: string
     email: string
     password: string
-
 }
 
-const user = new Schema ({
-
+const user = new Schema<UserType> ({
     name: {
         type: String,
         required: true
     },
-    
     email: {
         type: String,
         required: true,
         unique: true
     },
-
     password: {
         type: String,
         required: true
     }
-
 })
 
 type WineType = {
-
-    
-    image: String
-    title: String
-    description: String
+    image: string
+    title: string
+    description: string
     type: 'red' | 'white' | 'pink'
-    price: Number
-
+    price: number
 }
 
-const wine = new Schema ({
-
-    
-
+const wine = new Schema<WineType> ({
     image: {
-
         type: String,
         required: true,
-        
     },
-
     title: {
         type: String,
         required: true
     }, 
-
     description: {
         type: String,
         required: true
-
     },
     type: {
         type: String,
         required: true,
         enum: ['red', 'white', 'pink'] 
     },
-
     price: {
         type: Number,
         required: true
-
     }
-
-
-
 })
 
-type PointSchemaType = {
-
+type PointType = {
     type: 'Point'
     coordinates: [number, number]
-
 }
 
-const pointSchema = new Schema ({
+const point = new Schema<PointType> ({
     type: {
         type: String,
         enum: ['Point'],
@@ -101,79 +77,60 @@ const pointSchema = new Schema ({
 })
 
 type MarketType = {
-
-    id: ObjectId
-    title: String
-    location: PointSchemaType
-    
-
+    title: string
+    address: string
+    location: PointType
+    wines: ObjectId[]
 }
 
 const market = new Schema ({
-
-    id: {
-        type: ObjectId,
-        required: true
-    },
-
     title: {
         type: String,
         required: true
     }, 
-
-    location: {
-        type: pointSchema,
+    address: {
+        type: String,
         required: true
     },
-
- 
+    location: {
+        type: point,
+        required: true
+    },
+    wines: [{
+        type: ObjectId,
+        ref: 'Wine'
+    }]
 })
 
-type ExperienceType = {
-
-    id: ObjectId
-    wine: WineType
-    market: MarketType
-    price: Number
-
+type ReviewType = {
+    wine: ObjectId
+    rate: number
+    comment?: string
 }
 
-
-const experience = {
-
-    id: {
+const review = new Schema<ReviewType>({
+    wine: {
         type: ObjectId,
-        required: true
+        required: true,
+        ref: 'Wine'
     },
-
-    wineEx: {
-        type: wine,
-        required: true
-
-    },
-
-    marketEx: {
-
-        type: market,
-        required: true
-    },
-
-    price: {
+    rate: {
         type: Number,
+        required: true,
+        enum: [1, 2, 3, 4, 5]
+    },
+    comment: {
+        type: String,
         required: true
-
     }
-
-
-
-}
+})
 
 
 const User = model<UserType>('User', user)
 const Wine = model<WineType>('Wine', wine)
-const PointSchema = model<PointSchemaType>('PointSchema', pointSchema)
+const Point = model<PointType>('Point', point)
 const Market = model<MarketType>('Market', market)
-const Experience = model<ExperienceType>('Experience', experience)
+const Review = model<ReviewType>('Review', review)
 
 
 export {
@@ -181,13 +138,12 @@ export {
     User,
     WineType,
     Wine,
-    PointSchemaType,
-    PointSchema,
+    PointType,
+    Point,
     Market,
     MarketType,
-    ExperienceType,
-    Experience,
-
+    ReviewType,
+    Review,
 }
 
 

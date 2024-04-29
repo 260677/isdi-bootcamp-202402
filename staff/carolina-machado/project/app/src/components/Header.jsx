@@ -1,11 +1,12 @@
-import { logger } from '../utils'
 
+import { logger, showFeedback } from '../utils'
 import logic from '../logic'
-
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Logo from '../img/wiineseekertrans2.png'
+import exiticon from '../img/blacklogouticon.svg'
 
-function Header() {
+function Header({ onUserLoggedOut }) {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
@@ -28,35 +29,23 @@ function Header() {
         }
     }
 
-    return <>
-
-        <header className="px-[5vw] fixed top-0 bg-white w-full">
-            <div>
+    return (
+        <header className="bg-fuchsia border shadow-sm shadow-fuchsia-700">
+            <div className="flex justify-center">
                 <img
-                    className="mx-auto w-48"
-                    src={Logo}
-                    alt="logo" />
+                className="w-36 flex"
+                src={Logo}
+                alt="logo"
+                />
             </div>
-
-
-            <div className="flex justify-center" >
-                {user && <h1>{user.name}</h1>}
-
-                <nav>
-
-                    <button className="bg-purple-700  text-white rounded-[5px] border-[1px] border-black my-[10px] p-2" onClick={handleLogoutClick}>Logout</button>
-
-                </nav>
-
-            </div>
-
-        </header>
-
-
-    </>
-
-
-
+        <div className="flex items-center">
+            {user && <h1 className="text-black-500 text-sm font-light absolute top-2 right-4">{user.name}</h1>}
+            <button className="absolute top-8 right-4" onClick={handleLogoutClick}>
+                <img className="w-5" src={exiticon} alt="exit" />
+            </button>
+        </div>
+    </header >
+    );
 }
 
 

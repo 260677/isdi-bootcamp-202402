@@ -47,22 +47,20 @@ function Register({ onUserRegistered, onLoginClick }) {
 
             <div className="flex flex-col items-center justify-center">
 
-                <h1 className="font-bold text-xl text-fuchsia-800 antialiased font-sans">REGISTER</h1>
+                <form className="bg-white flex flex-col items-center justify-center rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
 
-                <form className="bg-white flex flex-col items-center justify-center shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
+                    <label className="flex items-start  text-gray-700 text-ml font-semibold antialiased" htmlFor="name">Name</label>
+                    <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight mb-4 focus:outline-none focus:shadow-outline" type="name" id="name" />
 
-                    <label className="block text-gray-700 text-ml mb-2 font-semibold" htmlFor="name">Name</label>
-                    <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="name" id="name" />
+                    <label className="flex items-start  text-gray-700 text-ml font-semibold antialiased" htmlFor="email">E-mail</label>
+                    <input className="shadow mb-4 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" id="email" />
 
-                    <label className="block text-gray-700 text-ml mb-2 font-semibold" htmlFor="email">E-mail</label>
-                    <input className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="email" id="email" />
+                    <label className="flex items-start  text-gray-700 text-ml font-semibold antialiased" htmlFor="password">Password</label>
+                    <input className="shadow mb-4 appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="password" id="password" />
 
-                    <label className="block text-gray-700 text-ml mb-2 font-semibold" htmlFor="email" htmlFor="password">Password</label>
-                    <input className="shadow appearance-none border border-fuchsia-700 rounded py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" type="password" id="password" />
+                    <button className="bg-white hover:bg-fuchsia-200 py-2 px-20 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-md antialiased"  type='submit'>Register</button>
 
-                    <button className="bg-fuchsia-800 hover:bg-purple-900 text-white font- py-2 px-4 rounded focus:outline-none focus:shadow-outline" type='submit'>Register</button>
-
-                    <a href="" className="inline-block align-baseline italic text-sm text-fuchsia-700 hover:text-purple-900" onClick={handleLoginClick}>Login</a>
+                    <a href="" className="inline-block align-baseline italic text-sm text-black  hover:text-purple-900 antialiased" onClick={handleLoginClick}>Login</a>
 
                 </form>
 
