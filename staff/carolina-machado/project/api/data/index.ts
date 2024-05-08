@@ -33,6 +33,7 @@ type WineType = {
     description: string
     type: 'red' | 'white' | 'pink'
     price: number
+    rates: number[]
 }
 
 const wine = new Schema<WineType> ({
@@ -56,6 +57,14 @@ const wine = new Schema<WineType> ({
     price: {
         type: Number,
         required: true
+    },
+    rates: {
+        type: [Number],
+        default: [],
+        validate: {
+            validator: (arr: number[]) => arr.every(rate => rate >= 1 && rate <= 5),
+            message: 'rating between 1-5'
+        }
     }
 })
 
@@ -71,7 +80,7 @@ const point = new Schema<PointType> ({
         required: true
     },
     coordinates: {
-        type: [Number],
+        type: [Number, Number],
         required: true
     }
 })
@@ -94,13 +103,16 @@ const market = new Schema ({
     },
     location: {
         type: point,
-        required: true
+        required: true,
+        coordinates: { type: [Number], default: [0, 0] }
     },
     wines: [{
         type: ObjectId,
         ref: 'Wine'
     }]
 })
+
+market.index({ location: '2dsphere' });
 
 type ReviewType = {
     wine: ObjectId

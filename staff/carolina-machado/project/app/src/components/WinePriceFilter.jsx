@@ -1,56 +1,118 @@
 import { logger, showFeedback } from '../utils'
 import logic from '../logic'
+import { errors } from 'com'
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import React from 'react';
-import Home from '../pages/Home'
+import { NotFoundError } from 'com/errors'
+import { useContext } from '../context.ts'
 
-function WinePriceFilter({ showWines, setShowWines, wineType }) {
-  const [wines, setWines] = useState(null);
-  const [lowestPrice, setLowestPrice] = useState('');
-  const [highestPrice, setHighestPrice] = useState('');
-  const [filteredWines, setFilteredWines] = useState(null);
-
-  useEffect(() => {
-    try {
-      logic.retrieveWines()
-        .then(setWines)
-        .catch(error => showFeedback(error, 'error'));
-    } catch (error) {
-      showFeedback(error);
-    }
-  }, []);
+function WinePriceFilter({ coordinates }) {
+  const { showFeedback, showConfirm } = useContext()
+  const [lowestPrice, setLowestPrice] = useState('')
+  const [highestPrice, setHighestPrice] = useState('')
+  const [proximityRange, setProximityRange] = useState('' || 1000)
+  const [filteredWines, setFilteredWines] = useState([])
+  const [selectedType, setSelectedType] = useState('')
 
   const handleLowestPriceChange = (event) => {
-    setLowestPrice(event.target.value);
-  };
+    setLowestPrice(event.target.value)
+  }
 
   const handleHighestPriceChange = (event) => {
-    setHighestPrice(event.target.value);
+    setHighestPrice(event.target.value)
+  }
+
+  const handleProximityChange = (range) => {
+    setProximityRange(range)
+  }
+
+  const handleSelectType = (type) => {
+    setSelectedType(type)
+  }
+
+  const handleApplyFilter = async () => {
+    try {
+      const minPrice = lowestPrice !== '' ? parseFloat(lowestPrice) : Number.NEGATIVE_INFINITY;
+      const maxPrice = highestPrice !== '' ? parseFloat(highestPrice) : Number.POSITIVE_INFINITY;
+
+      let proximity;
+      switch (proximityRange) {
+        case '0-250':
+          proximity = 250;
+          break;
+        case '250-500':
+          proximity = 500;
+          break;
+        case '500-750':
+          proximity = 750;
+          break;
+        case '750-1000':
+          proximity = 1000;
+          break;
+        default:
+          proximity = '';
+          break;
+      }
+
+      const type = selectedType;
+
+      const fetchData = async () => {
+        try {
+          const data = await logic.findWinesAndMarkets({ coordinates, proximity, minPrice, maxPrice, type });
+          setFilteredWines(data);
+          console.log('filteredWines:', data); // Log the data fetched
+        } catch (error) {
+          showFeedback(error);
+        }
+      };
+
+      await fetchData(); // Call the async function to fetch data
+
+    } catch (error) {
+      showFeedback(error)
+    }
   };
-  
-  const handleApplyFilter = () => {
-    // Convert prices to numbers
-    const minPrice = lowestPrice !== '' ? parseFloat(lowestPrice) : Number.NEGATIVE_INFINITY;
-    const maxPrice = highestPrice !== '' ? parseFloat(highestPrice) : Number.POSITIVE_INFINITY;
 
-    const filteredByPrice = wines.filter((wine) => {
-      const winePrice = parseFloat(wine.price);
-      return winePrice >= minPrice && winePrice <= maxPrice;
-    });
+  console.log('Rate:', filteredWines.rates)
 
-    const filteredByTypeAndPrice = filteredByPrice.filter((wine) => wine.type === wineType);
+  function renderStars(rate) {
+    const filledStars = '★'.repeat(rate)
+    const emptyStars = '☆'.repeat(5 - rate)
+    return `${filledStars}${emptyStars} (${rate}/5)`
+  }
 
-    setFilteredWines(filteredByTypeAndPrice);
-  };
 
-  console.log('Filtered Wines:', filteredWines);
 
   return (
     <>
+
+
+
       <h1 className="flex justify-center mb-4 mt-8 font-semibold">
         Select your wine price:
       </h1>
+
+
+      <h1 className="flex justify-center text-fuchsia-800 antialiased mb-2 font-semibold">
+        Distance (up to):</h1>
+
+
+      <div className="flex justify-center space-x-4 mb-2">
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center" value={proximityRange} onClick={() => handleProximityChange('0-250')}>
+          250mt
+        </button>
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center" value={proximityRange} onClick={() => handleProximityChange('250-500')}>
+          500mt
+        </button>
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center" value={proximityRange} onClick={() => handleProximityChange('500-750')}>
+          750mt
+        </button>
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center" value={proximityRange} onClick={() => handleProximityChange('750-1000')}>
+          1km
+        </button>
+      </div>
+
 
       <div className="price-filter flex flex-col items-center mt-4 mb-4">
         <label htmlFor="lowest-price" className="flex justify-center text-fuchsia-800 antialiased mb-2 font-semibold">
@@ -72,26 +134,35 @@ function WinePriceFilter({ showWines, setShowWines, wineType }) {
           id="highest-price"
           value={highestPrice}
           onChange={handleHighestPriceChange}
-          className="shadow mb-4 appearance-none antialiased border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow mb-2 appearance-none antialiased border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
+      </div>
 
+      <h1 className="flex justify-center mb-2 font-semibold">Select wine by type:</h1>
+      <div className="flex justify-center space-x-4">
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={() => handleSelectType("red")}>Red</button>
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={() => handleSelectType("white")}>White</button>
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={() => handleSelectType("pink")}>Pink</button>
+      </div>
+
+      <div className="flex justify-center mb-2">
         <button className="bg-white hover:bg-fuchsia-200 py-2 px-16 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={handleApplyFilter}>Seek Wine</button>
       </div>
 
       <div>
         <ul>
-          {filteredWines && filteredWines.map((wine) => (
-            <li
-              className="flex items-center mt-4 border p-50px"
-              key={wine._id}
-            >
+          {Array.isArray(filteredWines.wines) && filteredWines.wines.map((wine) => (
+            <li className="flex items-center mt-4 border p-50px" key={wine.id}>
               <img className="w-40 h-40" src={wine.image} alt="wine image" />
               <div>
                 <h3 className="text-lg text-gray-700 font-semibold mb-8px">
                   {wine.title}
                 </h3>
-                <p className="text-ml font-light text-#4a5568">
+                <p className="text-gray-600 font-light">
                   Price: €{wine.price}
+                </p>
+                <p className="text-yellow-700 font-light">
+                  {renderStars(wine.rates)}
                 </p>
               </div>
             </li>
@@ -99,7 +170,7 @@ function WinePriceFilter({ showWines, setShowWines, wineType }) {
         </ul>
       </div>
     </>
-  );
+  )
 }
 
-export default WinePriceFilter;
+export default WinePriceFilter

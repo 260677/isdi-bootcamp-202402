@@ -55,24 +55,22 @@ describe('retrieveWines', () => {
                     )
             )
     )
-                                    /*
+                                    
     it('fails on incorrect userId', () => 
         Promise.all([
             User.deleteMany(),
             Wine.deleteMany()
         ])
             .then(() => 
-                User.create({ username: 'PereHDZ', email: 'pere@hdz.com', password: 'cuquis1992', avatar: null })
+                User.create({ name: 'Carolina Machado', email: 'carol@mac.com', password: '123carol123' })
                     .then(user => 
                         Promise.all([
-                            Race.create({ name: 'Human', description: 'I am a Human'}),
-                            Race.create({ name: 'Elf', description: 'I am an Elf'}),
-                            Race.create({ name: 'Dwarf', description: 'I am a Dwarf'}),
+                            Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Albariño Trás Montes', description: 'lemon, peach and jasmine notes', type: 'white', price: 7 }),
                         ])
-                            .then(([race1, race2, race3]) => {
+                            .then(([wine1]) => {
                                 const userId = '26'
 
-                                logic.retrieveRaces(userId)
+                                logic.retrieveWines(userId)
                                     .catch(error => {
                                         expect(error).to.be.instanceOf(NotFoundError)
                                         expect(error.message).to.equal('user not found')
@@ -82,11 +80,11 @@ describe('retrieveWines', () => {
             )
     )
 
-
+/*
     it('fails on non-string userId', () => 
         Promise.all([
             User.deleteMany(),
-            Race.deleteMany()
+            Wine.deleteMany()
         ])
             .then(() => 
                 User.create({ username: 'PereHDZ', email: 'pere@hdz.com', password: 'cuquis1992', avatar: null })

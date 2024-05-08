@@ -11,7 +11,10 @@
     "test-inspect": "npx mocha --inspect-brk",
     "populate": "tsx data/populate.ts",
     "populate-wines": "tsx data/populate-wines.ts",
-    "populate-markets": "tsx data/populate-markets.ts"
+    "populate-markets": "tsx data/populate-markets.ts",
+    "populate-test": "tsx data/populate-test.ts"
+    
+    
 
   },
 

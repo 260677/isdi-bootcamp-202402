@@ -5,6 +5,7 @@ import logoutUser from './logoutUser'
 import retrieveUser from './retrieveUser'
 import retrieveWines from './retrieveWines'
 import cleanUpLoggedInUserId from './cleanUpLoggedInUserId'
+import findWinesAndMarkets from './findWinesAndMarkets'
 
 const logic = {
 
@@ -14,7 +15,8 @@ const logic = {
     logoutUser,
     retrieveUser,
     retrieveWines,
-    cleanUpLoggedInUserId
+    cleanUpLoggedInUserId,
+    findWinesAndMarkets
 
 
 }

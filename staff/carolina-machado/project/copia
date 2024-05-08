@@ -1,0 +1,77 @@
+function findWinesAndMarkets(userId: string, location: [number], proximity: number = 1000, minPrice: number = 3, maxPrice: number = 10, type?: string): Promise<{ wines: [ObjectId], markets: [ObjectId]}> {
+    validate.text(userId, 'userId', true);
+    for (let i = 0; i < location.length; i++) {
+        if (typeof location[i] !== 'number') throw new TypeError('number is not a number') 
+    }
+    if (typeof proximity !== 'number') throw new TypeError('proximity is not a number')
+    if (typeof minPrice !== 'number') throw new TypeError('minPrice is not a number')
+    if (typeof maxPrice !== 'number') throw new TypeError('maxPrice is not a number')
+    validate.text(type)
+
+    return (async () => {
+        const user = await User.findById(userId);
+
+        if (!user) throw new NotFoundError('User not found');
+
+        // Query for markets within the specified distance
+        let markets = await Market.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: location
+                    },
+                    $maxDistance: proximity || 1000
+                }
+            }
+        }).lean();
+
+        const wineIds = markets.reduce((wineIdsAccum, market) => {
+            market.wines.forEach(wineId => {
+                const exists = wineIdsAccum.some(wineId2 => wineId2.toString() === wineId.toString())
+
+                if (!exists)
+                    wineIdsAccum.push(wineId)
+            })
+
+            return wineIdsAccum
+        }, [])
+
+        const query: { _id: { $in: ObjectId [] }, type?: string, price: { $gte: number, $lte: number } } = {
+            _id: {
+                $in: wineIds
+            },
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            }
+        }
+
+        if (type)
+            query.type = type
+
+        const wines = await Wine.find(query).lean();
+        
+        markets = markets.filter(market => {
+            market.wines = market.wines.filter(wineId => wines.some(wine => wine._id.toString() === wineId))
+
+            return !!market.wines.length
+        })   
+        
+        markets.forEach(market => {
+            market.id = market._id.toString()
+            delete market._id
+
+            market.wines = market.wines.map(wineId => wineId.toString())
+        })
+
+        wines.forEach(wine => {
+            wine.id = wine.id.toString()
+            delete wine._id
+        })
+
+        return { markets, wines }
+    })()
+}
+
+export default findWinesAndMarkets;

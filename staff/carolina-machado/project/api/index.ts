@@ -1,3 +1,4 @@
+//@ts-nocheck
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import express from 'express'
@@ -7,6 +8,7 @@ import tracer from 'tracer'
 import colors from 'colors'
 import jwt from 'jsonwebtoken'
 import cors from 'cors'
+import findWinesAndMarkets from './logic/findWinesAndMarkets.ts'
 
 dotenv.config()
 
@@ -149,29 +151,33 @@ mongoose.connect(MONGODB_URL)
             }
         })
 
-        api.get('/wines', (req, res) => {
-            try {
-                const { authorization } = req.headers
 
-                const token = authorization.slice(7)
+
+        api.get('/wines', async (req, res) => {
+            try {
+                const { authorization } = req.headers;
+
+                const token = authorization.slice(7);
 
                 const { sub: userId } = jwt.verify(token, JWT_SECRET)
 
-                logic.retrieveWines(userId as string)
-                    .then(wines => res.json(wines))
-                    .catch(error => {
-                        if (error instanceof SystemError) {
-                            logger.error(error.message)
+                const location = [parseFloat(req.query.latitude), parseFloat(req.query.longitude)]; // Assuming latitude and longitude are passed as query parameters
+                const proximity = parseFloat(req.query.proximity);
+                const minPrice = parseFloat(req.query.minPrice);
+                const maxPrice = parseFloat(req.query.maxPrice);
+                const type = req.query.type;
 
-                            res.status(500).json({ error: error.constructor.name, message: error.message })
-                        } else if (error instanceof NotFoundError) {
-                            logger.warn(error.message)
+                // Call the function to find wines and markets
+                const result = await findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type);
 
-                            res.status(404).json({ error: error.constructor.name, message: error.message })
-                        }
-                    })
+                // Log the result
+                console.log('Result API:', result);
+
+                // Send the result as a response
+                res.json(result);
+
             } catch (error) {
-                if (error instanceof TypeError || error instanceof ContentError){
+                if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
 
                     res.status(406).json({ error: error.constructor.name, message: error.message })
@@ -187,8 +193,7 @@ mongoose.connect(MONGODB_URL)
             }
         })
 
-        
-        // ...
+
 
         api.listen(PORT, () => logger.info(`API listening on port ${PORT}`))
     })
