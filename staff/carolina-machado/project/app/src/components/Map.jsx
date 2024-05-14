@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+
 
 function Map({ coordinates }) {
   const mapRef = useRef(null);
