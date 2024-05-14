@@ -155,26 +155,25 @@ mongoose.connect(MONGODB_URL)
 
         api.get('/wines', async (req, res) => {
             try {
-                const { authorization } = req.headers;
+                const { authorization } = req.headers
 
-                const token = authorization.slice(7);
+                const token = authorization.slice(7)
 
                 const { sub: userId } = jwt.verify(token, JWT_SECRET)
 
-                const location = [parseFloat(req.query.latitude), parseFloat(req.query.longitude)]; // Assuming latitude and longitude are passed as query parameters
-                const proximity = parseFloat(req.query.proximity);
-                const minPrice = parseFloat(req.query.minPrice);
-                const maxPrice = parseFloat(req.query.maxPrice);
-                const type = req.query.type;
+                const location = [parseFloat(req.query.latitude), parseFloat(req.query.longitude)]
+                const proximity = parseFloat(req.query.proximity)
+                const minPrice = parseFloat(req.query.minPrice)
+                const maxPrice = parseFloat(req.query.maxPrice)
+                const type = req.query.type
 
-                // Call the function to find wines and markets
-                const result = await findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type);
+                
+                const result = await findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type)
 
-                // Log the result
-                console.log('Result API:', result);
+                
+                console.log('Result API:', result)
 
-                // Send the result as a response
-                res.json(result);
+                res.json(result)
 
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {

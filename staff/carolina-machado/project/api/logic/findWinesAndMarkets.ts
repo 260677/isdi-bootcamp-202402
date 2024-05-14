@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { Schema, ObjectId } from 'mongoose';
-const { Types: { ObjectId } } = Schema;
 import { User, Wine, Market } from '../data/index.ts';
 import { validate, errors } from 'com';
-import { validate, errors } from 'com'
+
+
 
 const { NotFoundError, SystemError } = errors;
 
@@ -20,9 +20,10 @@ type Market = {
     address: string
     location: Point
     wines: string[]
+
 }
 
-function findWinesAndMarkets(userId: string, location: [number, number], proximity: number = 1000, minPrice: number = 3, maxPrice: number = 10, type?: string): Promise<{ wines: [ObjectId], markets: [ObjectId]}> {
+function findWinesAndMarkets(userId: string, location: [number, number], proximity: number = 1000, minPrice: number = 3, maxPrice: number = 10, type?: string ): Promise<{ wines: [ObjectId], markets: [ObjectId] }> {
     validate.text(userId, 'userId', true);
     for (let i = 0; i < location.length; i++) {
         if (!Array.isArray(location) || location.length !== 2 || location.some(coord => typeof coord !== 'number')) {
@@ -40,6 +41,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
         if (!user) throw new NotFoundError('User not found');
 
         // Query for markets within the specified distance
+        debugger
         let markets = await Market.find({
             location: {
                 $near: {
@@ -63,7 +65,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
             return wineIdsAccum
         }, [])
 
-        const query: { _id: { $in: ObjectId [] }, type?: string, price: { $gte: number, $lte: number } } = {
+        const query: { _id: { $in: ObjectId[] }, type?: string, price: { $gte: number, $lte: number } } = {
             _id: {
                 $in: wineIds
             },
@@ -77,13 +79,14 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
             query.type = type
 
         const wines = await Wine.find(query).lean();
-        
+
         markets = markets.filter(market => {
-            market.wines = market.wines.filter(wineId => wines.some(wine => wine._id.toString() === wineId) && wine.price >= minPrice && wine.price <= maxPrice)
-        
-            return !!market.wines.length
-        })
-        
+            market.wines = market.wines.filter(wineId => wines.some(wine => wine._id.toString() === wineId.toString()));
+
+            return market.wines.length > 0;
+        });
+
+
         markets.forEach(market => {
             market.id = market._id.toString()
             delete market._id
@@ -95,6 +98,10 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
             wine.id = wine._id.toString()
             delete wine._id
         })
+
+            
+
+    
 
         return { markets, wines }
     })()

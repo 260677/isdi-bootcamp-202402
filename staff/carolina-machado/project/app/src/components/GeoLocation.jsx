@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
 
-
 function GeoLocation({ coordinates, setCoordinates }) {
   const [error, setError] = useState(null)
 
@@ -30,7 +29,7 @@ function GeoLocation({ coordinates, setCoordinates }) {
           <>
             {coordinates && coordinates.latitude !== null && coordinates.longitude !== null && (
               <p>
-                Lat: {coordinates.latitude}, Long: {coordinates.longitude}
+                Lat: {coordinates.latitude}, Long: {coordinates.longitude} (to be hidden)
               </p>
             )}
           </>

@@ -1,74 +1,296 @@
-Copilot
-The error message you’re encountering—TypeError: arr.forEach is not a function—indicates that you’re trying to use the forEach method on a variable that is not an array. Let’s take a closer look at your code snippet to identify the issue.
+import logic from '../logic';
+import { useState, useEffect } from 'react';
+import React from 'react';
+import { useContext } from '../context.ts';
+/* import ExpandedWineDetails from './ExpandedWineDetails'; */
 
-The relevant part of your test case is as follows:
+function WinePriceFilter({ coordinates, marketId }) {
+  const { showFeedback } = useContext();
+  const [lowestPrice, setLowestPrice] = useState('');
+  const [highestPrice, setHighestPrice] = useState('');
+  const [proximityRange, setProximityRange] = useState('' || 1000);
+  const [filteredWines, setFilteredWines] = useState([]);
+  const [selectedType, setSelectedType] = useState('');
+  const [isPressed250, setIsPressed250] = useState(false);
+  const [isPressed500, setIsPressed500] = useState(false);
+  const [isPressed750, setIsPressed750] = useState(false);
+  const [isPressed1km, setIsPressed1km] = useState(false);
+  const [isPressedWhite, setIsPressedWhite] = useState(false);
+  const [isPressedRed, setIsPressedRed] = useState(false);
+  const [isPressedPink, setIsPressedPink] = useState(false);
+  const [expandedWine, setExpandedWine] = useState(null);
+  
 
-JavaScript
+  const handleLowestPriceChange = (event) => {
+    setLowestPrice(event.target.value);
+  };
 
-it('finds all the red wines in a collection of 2 reds and 1 white wine', () =>
-    Promise.all([
-        User.deleteMany(),
-        Wine.deleteMany(),
-        Market.deleteMany(),
-    ])
-        .then(() =>
-            User.create({ name: 'Carol Machado', email: 'carol@mac.com', password: '123carol123' })
-                .then(user =>
-                    Promise.all([
-                        Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Albariño Trás Montes', description: 'lemon, peach and jasmine notes', type: 'white', price: 7 }),
-                        Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Jasmim Red', description: 'pure jasmine, 6 months barrica', type: 'red', price: 9 }),
-                        Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Red Tres Joli', description: 'french wine, 2 years roble, woody, dry', type: 'red', price: 12 }),
-                    ])
-                        .then(([wine1, wine2, wine3]) =>
-                            logic.findWinesAndMarkets(user.id, '[45, 50]', 500, 3, 5, 'red')
-                                .then(wines => {
-                                    expect(wines).to.have.lengthOf(2)
-                                    expect(wines[0].type).to.equal('red')
-                                    expect(wines[1].type).to.equal('red')
-                                })
-                        )
-                )
-        )
-)
-AI-generated code. Review and use carefully. More info on FAQ.
-The error occurs when you’re trying to iterate over an array using forEach. Let’s check the relevant parts of your findWinesAndMarkets function to see if there’s an issue there. Could you share the implementation of the findWinesAndMarkets function? Specifically, the part where you’re manipulating the markets array and its wines. This will help us identify the root cause of the error. 😊
+  const handleHighestPriceChange = (event) => {
+    setHighestPrice(event.target.value);
+  };
 
-You
-could you please help me to fix it?
-Copilot
-Certainly! Let’s take a closer look at the issue in your findWinesAndMarkets function. The error message you’re encountering—TypeError: arr.forEach is not a function—indicates that you’re trying to use the forEach method on a variable that is not an array.
+  const handleProximityChange = (range) => {
+    setProximityRange(range);
+    switch (range) {
+      case '250':
+        setIsPressed250(true);
+        setIsPressed500(false);
+        setIsPressed750(false);
+        setIsPressed1km(false);
+        break;
+      case '500':
+        setIsPressed250(false);
+        setIsPressed500(true);
+        setIsPressed750(false);
+        setIsPressed1km(false);
+        break;
+      case '750':
+        setIsPressed250(false);
+        setIsPressed500(false);
+        setIsPressed750(true);
+        setIsPressed1km(false);
+        break;
+      case '1km':
+        setIsPressed250(false);
+        setIsPressed500(false);
+        setIsPressed750(false);
+        setIsPressed1km(true);
+        break;
+      default:
+        break;
+    }
+  };
 
-Here’s the relevant part of your test case:
+  const handleSelectType = (type) => {
+    setSelectedType(type);
+    switch (type) {
+      case 'red':
+        setIsPressedRed(true);
+        setIsPressedWhite(false);
+        setIsPressedPink(false);
+        break;
 
-JavaScript
+      case 'white':
+        setIsPressedRed(false);
+        setIsPressedWhite(true);
+        setIsPressedPink(false);
+        break;
 
-it('finds all the red wines in a collection of 2 reds and 1 white wine', () =>
-    Promise.all([
-        User.deleteMany(),
-        Wine.deleteMany(),
-        Market.deleteMany(),
-    ])
-    .then(() =>
-        User.create({ name: 'Carol Machado', email: 'carol@mac.com', password: '123carol123' })
-        .then(user =>
-            Promise.all([
-                Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Albariño Trás Montes', description: 'lemon, peach and jasmine notes', type: 'white', price: 7 }),
-                Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Jasmim Red', description: 'pure jasmine, 6 months barrica', type: 'red', price: 9 }),
-                Wine.create({ image: `https://imgbox.com/tFemqCFN`, title: 'Red Tres Joli', description: 'french wine, 2 years roble, woody, dry', type: 'red', price: 12 }),
-            ])
-            .then(([wine1, wine2, wine3]) =>
-                logic.findWinesAndMarkets(user.id, '[45, 50]', 500, 3, 5, 'red')
-                .then(wines => {
-                    expect(wines).to.have.lengthOf(2)
-                    expect(wines[0].type).to.equal('red')
-                    expect(wines[1].type).to.equal('red')
-                })
-            )
-        )
-    )
-)
-AI-generated code. Review and use carefully. More info on FAQ.
-Now let’s focus on the findWinesAndMarkets function itself. Specifically, we’ll look at the part where you manipulate the markets array and its wines. Could you share the implementation of the findWinesAndMarkets function? This will help us identify the root cause of the error. 😊
+      case 'pink':
+        setIsPressedRed(false);
+        setIsPressedWhite(false);
+        setIsPressedPink(true);
+        break;
+    }
+  };
+
+  const handleApplyFilter = async () => {
+    try {
+      const minPrice = lowestPrice !== '' ? parseFloat(lowestPrice) : Number.NEGATIVE_INFINITY;
+      const maxPrice = highestPrice !== '' ? parseFloat(highestPrice) : Number.POSITIVE_INFINITY;
+
+      let proximity;
+      switch (proximityRange) {
+        case '0-250':
+          proximity = 250;
+          break;
+        case '250-500':
+          proximity = 500;
+          break;
+        case '500-750':
+          proximity = 750;
+          break;
+        case '750-1000':
+          proximity = 1000;
+          break;
+        default:
+          proximity = '';
+          break;
+      }
+
+      const type = selectedType;
+
+      const fetchData = async () => {
+        try {
+          const data = await logic.findWinesAndMarkets({ coordinates, proximity, minPrice, maxPrice, type });
+          setFilteredWines(data);
+          console.log('filteredWines:', data);
+        } catch (error) {
+          showFeedback("An error occurred while fetching data.");
+        }
+      };
+
+      await fetchData();
+    } catch (error) {
+      showFeedback("An error occurred while applying filters.");
+    }
+  };
+
+  function renderStars(rate) {
+    const filledStars = '★'.repeat(rate);
+    const emptyStars = '☆'.repeat(6 - rate);
+    return `${filledStars}${emptyStars} (${rate}/5)`;
+  }
+
+  useEffect(() => {
+    console.log('Expanded Wine:', expandedWine);
+  }, [expandedWine]);
+
+  const toggleExpanded = (wineId, marketId) => {
+
+    const market = filteredWines.markets.find((m) => m.id === marketId);
+  // Find the wine object from filteredWines based on wineId
+    const wine = filteredWines.wines.find((w) => w.id === wineId);
+
+    setExpandedWine({ wineId, marketId, market, wine });
+  };
 
 
 
+  return (
+    <>
+      <h1 className="flex justify-center mb-4 mt-8 font-semibold">
+        Select your wine price:
+      </h1>
+
+      <h1 className="flex justify-center text-fuchsia-800 antialiased mb-2 font-semibold">
+        Distance (up to):
+      </h1>
+
+      <div className="flex justify-center space-x-4 mb-2">
+        <button
+          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed250 ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
+          onClick={() => handleProximityChange('250')}
+        >
+          250mt
+        </button>
+
+        <button
+          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed500 ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
+          onClick={() => handleProximityChange('500')}
+        >
+          500mt
+        </button>
+
+        <button
+          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed750 ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
+          onClick={() => handleProximityChange('750')}
+        >
+          750mt
+        </button>
+
+        <button
+          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed1km ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
+          onClick={() => handleProximityChange('1km')}
+        >
+          1km
+        </button>
+      </div>
+
+      <div className="price-filter flex flex-col items-center mt-4 mb-4">
+        <label htmlFor="lowest-price" className="flex justify-center text-fuchsia-800 antialiased mb-2 font-semibold">
+          Lowest Price:
+        </label>
+        <input
+          type="number"
+          id="lowest-price"
+          value={lowestPrice}
+          onChange={handleLowestPriceChange}
+          className="shadow mb-4 appearance-none antialiased border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+
+        <label htmlFor="highest-price" className="flex justify-center antialiased mb-2 font-semibold text-fuchsia-800">
+          Highest Price:
+        </label>
+        <input
+          type="number"
+          id="highest-price"
+          value={highestPrice}
+          onChange={handleHighestPriceChange}
+          className="shadow mb-2 appearance-none antialiased border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+
+      <h1 className="flex justify-center mb-2 font-semibold">Select wine by type:</h1>
+      <div className="flex justify-center space-x-4">
+        <button className={`${isPressedRed ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'} py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased"`} onClick={() => handleSelectType("red")}>Red</button>
+        <button className={`${isPressedWhite ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'} py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased"`} onClick={() => handleSelectType("white")}>White</button>
+        <button className={`${isPressedPink ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'} py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased"`} onClick={() => handleSelectType("pink")}>Pink</button>
+      </div>
+
+      <div className="flex justify-center mb-2">
+        <button className="bg-white hover:bg-fuchsia-200 py-2 px-16 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={handleApplyFilter}>Seek Wine</button>
+      </div>
+
+      ### <div>
+        <ul>
+          {Array.isArray(filteredWines.markets) &&
+            filteredWines.markets.map((market) => (
+              <React.Fragment key={market.id}>
+                {market.wines.map((wineId) => {
+                  const wine = filteredWines.wines.find((w) => w.id === wineId);
+                  const isExpanded = expandedWine && expandedWine.wineId === wine.id && expandedWine.marketId === market.id;
+
+                  return (
+                    <React.Fragment key={`${market.id}-${wine.id}`}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleExpanded(wine.id, market.id);
+                        }}
+                      >
+                        <li className={`flex items-center mt-4 border p-50px ${isExpanded ? 'expanded' : ''}`}>
+                          {/* Render the non-expanded content */}
+                          {!isExpanded && (
+                            <>
+                              <div>
+                                <img className="w-40 h-40" src={wine.image} alt="wine image" />
+                              </div>
+                              <div>
+                                <h2 className="text-lg text-gray-700 font-semibold mb-8px">{wine.title}</h2>
+                                <p className="text-gray-600 font-light">Price: €{wine.price}</p>
+                                <p className="text-yellow-700 font-light">{renderStars(wine.rates)}</p>
+                                {market && <p className="text-gray-600 font-light">Market: {market.title}</p>}
+                              </div>
+                            </>
+                          )}
+                        </li>
+                      </a>
+                      {/* Render the expanded content */}
+                      {isExpanded && (
+                        <li className="flex items-center justify-center ">
+                          <div className="expanded-detail-content transition delay-1000 duration-1000 ease-in-out">
+                            <div className="flex justify-center">
+                              <img src={wine.image} alt="wine image" className="w-60 h-60" />
+                            </div>
+                            <div>
+                              <h2 className="text-lg text-gray-700 font-semibold mb-8px">{wine.title}</h2>
+                              <p className="text-ml text-gray-700 font-thin mb-8px">{wine.description}</p>
+                              <p className="text-gray-700 text-ml font-light">Price: €{wine.price}</p>
+                              <p className="text-yellow-700 text-ml font-light">
+                                Rating: {renderStars(wine.rates)}
+                                <span className="text-yellow-700 text-sm font-thin italic">Help us to improve! Rate the wine!</span>
+                              </p>
+                              {market && (
+                                <div className="market-details">
+                                  <p className="text-ml text-gray-700 font-semibold mb-8px">{market.title}</p>
+                                  <p className="text-gray-700 text-ml font-light">{market.address}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </li>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+        </ul>
+      </div> ###
+    </>
+  );
+};
+
+export default WinePriceFilter;

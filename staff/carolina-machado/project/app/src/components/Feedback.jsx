@@ -2,6 +2,9 @@
 import RoundButton from './library/RoundButton'
 import { logger } from '../utils'
 
+import { errors } from 'com'
+
+
 function Feedback({ message, level, onAcceptClick }) {
     logger[level](message)
 

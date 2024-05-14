@@ -14,9 +14,13 @@ import Feedback from './components/Feedback'
 import Confirm from './components/Confirm'
 import { errors } from 'com'
 
+
+
 const { UnauthorizedError } = errors
 
 function App() {
+
+
   const [feedback, setFeedback] = useState(null)
   const [confirm, setConfirm] = useState(null)
   
@@ -29,6 +33,8 @@ function App() {
   const handleRegisterClick = () => navigate('/register')
 
   const handleUserLoggedIn = () => navigate('/')
+
+ 
 
   const handleUserLoggedOut = () => goToLogin()
 
@@ -71,6 +77,8 @@ function App() {
       {feedback && <Feedback message={feedback.message} level={feedback.level} onAcceptClick={handleFeedbackAcceptClick} />}
 
       {confirm && <Confirm message={confirm.message} onCancelClick={handleConfirmCancelClick} onAcceptClick={handleConfirmAcceptClick} />}
+
+      
     </>
   
 }

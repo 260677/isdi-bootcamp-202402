@@ -1,7 +1,7 @@
 import { validate, errors } from 'com'
 
 function findWinesAndMarkets({coordinates, proximity, minPrice, maxPrice, type}) {
-    
+
     validate.token(sessionStorage.token)
 
     const [, payloadB64] = sessionStorage.token.split('.')
@@ -22,6 +22,7 @@ function findWinesAndMarkets({coordinates, proximity, minPrice, maxPrice, type})
         queryParams.append('type', type)
     }
 
+
     url += `?${queryParams.toString()}`
 
     console.log('Request URL:', url)
@@ -38,11 +39,11 @@ function findWinesAndMarkets({coordinates, proximity, minPrice, maxPrice, type})
 
             return res.json()
                 .then(body => {
-                const { error, message } = body
+                    const { error, message } = body
 
-                const constructor = errors[error]
+                    const constructor = errors[error]
 
-                throw new constructor(message)
+                    throw new constructor(message)
             })
     })
 }

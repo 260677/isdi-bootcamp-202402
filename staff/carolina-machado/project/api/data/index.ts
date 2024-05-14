@@ -112,7 +112,7 @@ const market = new Schema ({
     }]
 })
 
-market.index({ location: '2dsphere' });
+market.index({ location: '2dsphere' })
 
 type ReviewType = {
     wine: ObjectId

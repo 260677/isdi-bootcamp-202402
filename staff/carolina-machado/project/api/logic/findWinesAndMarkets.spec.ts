@@ -38,6 +38,7 @@ describe('findWinesAndMarkets', () => {
                     ])
                     .then(([market1, market2, market3]) => {
                         console.log('Markets created:', market1, market2, market3)
+                        debugger
                         return logic.findWinesAndMarkets(user.id, [41.3795558, 2.1535018], 1000, 3, 15, 'red')
                     })
                     .then(({ markets, wines }) => {
@@ -54,7 +55,7 @@ describe('findWinesAndMarkets', () => {
                 )
             )
         )
-    );
+    )
 
 
     it('finds all the red wines in between 5 and 10 euros', () =>
