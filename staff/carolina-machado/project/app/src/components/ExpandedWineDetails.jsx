@@ -1,7 +1,7 @@
 import React from 'react'
 import Map from './Map'
 import WineRating from './WineRating'
-import { useState, useEffect } from 'react';
+
 
 function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expandedWine }) {
   return (

@@ -1,78 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import handleSubmitRating from '../logic/handleSubmitRating';
+import React, { useState, useEffect } from 'react'
+import handleSubmitRating from '../logic/handleSubmitRating'
 
 
 function WineRating({ wineId }) {
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [userRating, setUserRating] = useState(0); // Initial user rating
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
-  const [wineData, setWineData] = useState(null);
+  const [showPopUp, setShowPopUp] = useState(false)
+  const [userRating, setUserRating] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState('')
+  const [wineData, setWineData] = useState(null)
 
   useEffect(() => {
     const handleScroll = () => {
       if (showPopUp) {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'
       } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = 'auto'
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll)
     };
-  }, [showPopUp]);
+  }, [showPopUp])
 
   useEffect(() => {
-    fetchWineData(); // Fetch wine data on component mount
-  }, []);
+    fetchWineData()
+  }, [])
 
   const fetchWineData = () => {
     fetch(`${import.meta.env.VITE_API_URL}/wines/${wineId}`)
       .then(res => res.json())
       .then(data => {
-        setWineData(data);
+        setWineData(data)
       })
       .catch(error => {
-        console.error('Error fetching wine data:', error);
-      });
-  };
+        console.error('Error fetching wine data:', error)
+      })
+  }
 
   const handleClick = () => {
-    setShowPopUp(true);
+    setShowPopUp(true)
   };
 
   const handleClose = () => {
-    setShowPopUp(false);
-    document.body.style.overflow = 'auto'; // Reset overflow property
+    setShowPopUp(false)
+    document.body.style.overflow = 'auto'
   };
 
   const handleRate = (rating) => {
     setUserRating(rating);
-    console.log('User rated the wine:', rating);
+    console.log('User rated the wine:', rating)
   };
 
   const handleSubmitRatingWrapper = () => {
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     handleSubmitRating(userRating, wineId)
       .then(data => {
-        console.log('Rating submitted:', userRating);
-        setMessage('Rating submitted successfully!');
+        console.log('Rating submitted:', userRating)
+        setMessage('Rating submitted successfully!')
         setTimeout(() => {
-          handleClose();
-        }, 2000); // Keep popup open for 2 seconds before closing
-        // Optionally, update the wine data with new average rating
-        setWineData(prevData => ({ ...prevData, averageRating: data.newAverageRating }));
+          handleClose()
+        }, 2000)
+
+        setWineData(prevData => ({ ...prevData, averageRating: data.newAverageRating }))
       })
       .catch(error => {
-        console.error('Error submitting rating:', error);
-        setMessage('Failed to submit rating. Please try again.');
+        console.error('Error submitting rating:', error)
+        setMessage('Failed to submit rating. Please try again.')
       })
       .finally(() => {
-        setIsSubmitting(false);
-      });
-  };
+        setIsSubmitting(false)
+      })
+  }
 
   return (
     <div>
@@ -110,7 +110,7 @@ function WineRating({ wineId }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default WineRating;
+export default WineRating

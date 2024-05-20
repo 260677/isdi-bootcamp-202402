@@ -1,7 +1,7 @@
-import { validate, errors } from 'com';
+import { validate, errors } from 'com'
 
 function handleSubmitRating(userRating, wineId) {
-    let url = `${import.meta.env.VITE_API_URL}/wines/${wineId}/rate`;
+    let url = `${import.meta.env.VITE_API_URL}/wines/${wineId}/rate`
 
     const requestBody = {
         rating: userRating
@@ -16,22 +16,14 @@ function handleSubmitRating(userRating, wineId) {
         body: JSON.stringify(requestBody)
     })
     .then(res => {
-        if (res.status === 200) return res.json();
+        if (res.status === 200) return res.json()
         return res.json().then(body => {
-            const { error, message } = body;
-            const constructor = errors[error];
-            throw new constructor(message);
+            const { error, message } = body
+            const constructor = errors[error]
+            throw new constructor(message)
         });
     })
-    /* .then(data => {
-        // Handle the updated rating data here
-        console.log('Updated Rating:', data.newAverageRating);
-        return data; // Return the data for further processing if needed
-    })
-    .catch(error => {
-        const constructor = errors[error]
-        throw new constructor(message)
-    }); */
+    
 }
 
 export default handleSubmitRating;

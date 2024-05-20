@@ -112,28 +112,28 @@ function WinePriceFilter({ coordinates }) {
 
       const fetchData = async () => {
         try {
-          const data = await logic.findWinesAndMarkets({ coordinates, proximity, minPrice, maxPrice, type });
-          setFilteredWines(data);
-          console.log('filteredWines:', data);
+          const data = await logic.findWinesAndMarkets({ coordinates, proximity, minPrice, maxPrice, type })
+          setFilteredWines(data)
+          console.log('filteredWines:', data)
         } catch (error) {
-          showFeedback("An error occurred while fetching data.");
+          showFeedback("An error occurred while fetching data.")
         }
-      };
+      }
 
-      await fetchData();
+      await fetchData()
     } catch (error) {
-      showFeedback("An error occurred while applying filters.");
+      showFeedback("An error occurred while applying filters.")
     }
   };
 
   function renderStars(rate) {
-    const filledStars = '★'.repeat(rate);
-    const emptyStars = '☆'.repeat(6 - rate);
+    const filledStars = '★'.repeat(rate)
+    const emptyStars = '☆'.repeat(6 - rate)
     return `${filledStars}${emptyStars} (${rate}/5)`
   }
 
   useEffect(() => {
-    console.log('Expanded Wine:', expandedWine);
+    console.log('Expanded Wine:', expandedWine)
   }, [expandedWine])
 
   const toggleExpanded = (wineId, marketId) => {

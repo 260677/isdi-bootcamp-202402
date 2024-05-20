@@ -70,7 +70,7 @@ const wine = new Schema<WineType>({
         min: 0,
         max: 5 
     }
-});
+})
 
 type PointType = {
     type: 'Point'

@@ -200,40 +200,40 @@ mongoose.connect(MONGODB_URL)
         // Endpoint to rate a wine
         api.post('/wines/:wineId/rate', jsonBodyParser, async (req, res) => {
             try {
-                const { wineId } = req.params;
-                const { rating } = req.body;
+                const { wineId } = req.params
+                const { rating } = req.body
 
-                console.log('Received Rating:', rating);
+                console.log('Received Rating:', rating)
 
-                const newAverageRating = await addNewRating(wineId, rating);
+                const newAverageRating = await addNewRating(wineId, rating)
 
-                res.json({ message: 'Rating updated successfully', newAverageRating });
+                res.json({ message: 'Rating updated successfully', newAverageRating })
             } catch (error) {
-                console.error('Error updating rating:', error);
+                console.error('Error updating rating:', error)
                 if (error instanceof NotFoundError) {
-                    res.status(404).json({ error: error.message });
+                    res.status(404).json({ error: error.message })
                 } else {
-                    res.status(500).json({ error: 'Internal server error' });
+                    res.status(500).json({ error: 'Internal server error' })
                 }
             }
-        });
+        })
 
         // Endpoint to fetch wine data by ID
         api.get('/wines/:wineId', async (req, res) => {
             try {
-                const { wineId } = req.params;
+                const { wineId } = req.params
 
-                const wine = await retrieveWineById(wineId);
+                const wine = await retrieveWineById(wineId)
                 res.json(wine);
             } catch (error) {
-                console.error('Error fetching wine data:', error);
+                console.error('Error fetching wine data:', error)
                 if (error instanceof NotFoundError) {
-                    res.status(404).json({ error: error.message });
+                    res.status(404).json({ error: error.message })
                 } else {
-                    res.status(500).json({ error: 'Internal server error' });
+                    res.status(500).json({ error: 'Internal server error' })
                 }
             }
-        });
+        })
 
         
 
