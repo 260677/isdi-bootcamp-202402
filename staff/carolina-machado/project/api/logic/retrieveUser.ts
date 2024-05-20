@@ -2,7 +2,7 @@ import { Schema } from 'mongoose'
 
 const { Types: { ObjectId } } = Schema
 
-import { UserType, User } from '../data/index.ts'
+import { User } from '../data/index.ts'
 
 import { validate, errors } from 'com'
 

@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { Schema, ObjectId } from 'mongoose';
-import { User, Wine, Market } from '../data/index.ts';
-import { validate, errors } from 'com';
+import { Schema, ObjectId } from 'mongoose'
+import { User, Wine, Market } from '../data/index.ts'
+import { validate, errors } from 'com'
 
 
 
-const { NotFoundError, SystemError } = errors;
+const { NotFoundError, SystemError } = errors
 
 type Wine = {
     id: string
@@ -27,7 +27,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
     validate.text(userId, 'userId', true);
     for (let i = 0; i < location.length; i++) {
         if (!Array.isArray(location) || location.length !== 2 || location.some(coord => typeof coord !== 'number')) {
-            throw new TypeError('location should be an array of two numbers');
+            throw new TypeError('location should be an array of two numbers')
         }
     }
     if (typeof proximity !== 'number') throw new TypeError('proximity is not a number')
@@ -36,12 +36,11 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
     validate.text(type)
 
     return (async () => {
-        const user = await User.findById(userId);
+        const user = await User.findById(userId)
 
-        if (!user) throw new NotFoundError('User not found');
+        if (!user) throw new NotFoundError('User not found')
 
         // Query for markets within the specified distance
-        debugger
         let markets = await Market.find({
             location: {
                 $near: {
@@ -52,7 +51,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
                     $maxDistance: proximity || 1000
                 }
             }
-        }).lean();
+        }).lean()
 
         const wineIds = markets.reduce((wineIdsAccum, market) => {
             market.wines.forEach(wineId => {
@@ -78,33 +77,30 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
         if (type)
             query.type = type
 
-        const wines = await Wine.find(query).lean();
+        const wines = await Wine.find(query).lean()
 
         markets = markets.filter(market => {
-            market.wines = market.wines.filter(wineId => wines.some(wine => wine._id.toString() === wineId.toString()));
+            market.wines = market.wines.filter(wineId => wines.some(wine => wine._id.toString() === wineId.toString()))
 
-            return market.wines.length > 0;
-        });
-
+            return market.wines.length > 0
+        })
 
         markets.forEach(market => {
             market.id = market._id.toString()
             delete market._id
 
             market.wines = market.wines.map(wineId => wineId.toString())
-        })
+        });
 
         wines.forEach(wine => {
             wine.id = wine._id.toString()
             delete wine._id
         })
 
-            
-
-    
+       
 
         return { markets, wines }
-    })()
+    })();
 }
 
-export default findWinesAndMarkets;
+export default findWinesAndMarkets

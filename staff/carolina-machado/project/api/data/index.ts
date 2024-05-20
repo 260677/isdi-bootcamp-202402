@@ -28,15 +28,16 @@ const user = new Schema<UserType> ({
 })
 
 type WineType = {
-    image: string
-    title: string
-    description: string
-    type: 'red' | 'white' | 'pink'
-    price: number
-    rates: number[]
-}
+    image: string,
+    title: string,
+    description: string,
+    type: 'red' | 'white' | 'pink',
+    price: number,
+    rates: number[],
+    averageRating: number 
+};
 
-const wine = new Schema<WineType> ({
+const wine = new Schema<WineType>({
     image: {
         type: String,
         required: true,
@@ -44,29 +45,32 @@ const wine = new Schema<WineType> ({
     title: {
         type: String,
         required: true
-    }, 
+    },
     description: {
         type: String,
         required: true
     },
     type: {
         type: String,
-        required: true,
-        enum: ['red', 'white', 'pink'] 
+        required: false,
+        enum: ['red', 'white', 'pink']
     },
     price: {
         type: Number,
-        required: true
+        required: true,
+        min: 0
     },
     rates: {
         type: [Number],
         default: [],
-        validate: {
-            validator: (arr: number[]) => arr.every(rate => rate >= 1 && rate <= 5),
-            message: 'rating between 1-5'
-        }
+    },
+    averageRating: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5 
     }
-})
+});
 
 type PointType = {
     type: 'Point'

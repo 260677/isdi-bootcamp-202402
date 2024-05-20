@@ -2,13 +2,17 @@
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import express from 'express'
-import logic from './logic/index.ts'
+import logic from './logic'
 import { errors } from 'com'
 import tracer from 'tracer'
 import colors from 'colors'
 import jwt from 'jsonwebtoken'
 import cors from 'cors'
 import findWinesAndMarkets from './logic/findWinesAndMarkets.ts'
+import retrieveWineById from './logic/retrieveWinebyId.ts'
+import addNewRating from './logic/addNewRating.ts'
+
+
 
 dotenv.config()
 
@@ -42,6 +46,7 @@ mongoose.connect(MONGODB_URL)
         const jsonBodyParser = express.json()
 
         api.use(cors())
+        api.use(express.json())
 
         api.post('/users', jsonBodyParser, (req, res) => {
             try {
@@ -151,8 +156,6 @@ mongoose.connect(MONGODB_URL)
             }
         })
 
-
-
         api.get('/wines', async (req, res) => {
             try {
                 const { authorization } = req.headers
@@ -167,10 +170,10 @@ mongoose.connect(MONGODB_URL)
                 const maxPrice = parseFloat(req.query.maxPrice)
                 const type = req.query.type
 
-                
+
                 const result = await findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type)
 
-                
+
                 console.log('Result API:', result)
 
                 res.json(result)
@@ -183,16 +186,56 @@ mongoose.connect(MONGODB_URL)
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
 
-                    res.status(498).json({ error: error.constructor.name, message: error.message })
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
                     logger.warn(error.message)
 
-                    res.status(500).json({ error: error.constructor.name, message: error.message })
+                    res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
+       
 
+        // Endpoint to rate a wine
+        api.post('/wines/:wineId/rate', jsonBodyParser, async (req, res) => {
+            try {
+                const { wineId } = req.params;
+                const { rating } = req.body;
+
+                console.log('Received Rating:', rating);
+
+                const newAverageRating = await addNewRating(wineId, rating);
+
+                res.json({ message: 'Rating updated successfully', newAverageRating });
+            } catch (error) {
+                console.error('Error updating rating:', error);
+                if (error instanceof NotFoundError) {
+                    res.status(404).json({ error: error.message });
+                } else {
+                    res.status(500).json({ error: 'Internal server error' });
+                }
+            }
+        });
+
+        // Endpoint to fetch wine data by ID
+        api.get('/wines/:wineId', async (req, res) => {
+            try {
+                const { wineId } = req.params;
+
+                const wine = await retrieveWineById(wineId);
+                res.json(wine);
+            } catch (error) {
+                console.error('Error fetching wine data:', error);
+                if (error instanceof NotFoundError) {
+                    res.status(404).json({ error: error.message });
+                } else {
+                    res.status(500).json({ error: 'Internal server error' });
+                }
+            }
+        });
+
+        
 
         api.listen(PORT, () => logger.info(`API listening on port ${PORT}`))
     })

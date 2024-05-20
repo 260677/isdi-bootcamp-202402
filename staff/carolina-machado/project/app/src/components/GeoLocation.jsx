@@ -14,7 +14,7 @@ function GeoLocation({ coordinates, setCoordinates }) {
         (error) => {
           setError(error.message)
         }
-      );
+      )
     } else {
       setError('Geolocation is not supported by this browser.')
     }

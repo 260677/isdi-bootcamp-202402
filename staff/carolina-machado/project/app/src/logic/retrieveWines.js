@@ -1,7 +1,7 @@
-import { validate, errors } from 'com'
+/* import { validate, errors } from 'com'
 
-function retrieveWines() {
-    //validation
+/* function retrieveWines() {
+    
     validate.token(sessionStorage.token)
 
     //logic
@@ -23,5 +23,6 @@ function retrieveWines() {
                 })
         })
 }
-
-export default retrieveWines
+ */
+// export default retrieveWines
+ */

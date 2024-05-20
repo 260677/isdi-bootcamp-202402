@@ -11,6 +11,8 @@ import WinePriceFilter from './components/WinePriceFilter'
 import Header from './components/Header'
 import GeoLocation from './components/GeoLocation'
 import Feedback from './components/Feedback'
+import Map from './components/Map'
+import WineRating from './components/WineRating'
 import Confirm from './components/Confirm'
 import { errors } from 'com'
 
@@ -34,6 +36,7 @@ function App() {
 
   const handleUserLoggedIn = () => navigate('/')
 
+  const handleSubmit = () => navigate('/wines')
  
 
   const handleUserLoggedOut = () => goToLogin()

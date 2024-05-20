@@ -82,8 +82,8 @@ describe('findWinesAndMarkets', () => {
                     return logic.findWinesAndMarkets(user.id, [41.38091, 2.0811182], 500, 5, 10, 'red') 
                     })
                     .then(({ markets, wines }) => {
-                        console.log('Wines found 2.case:', wines);
-                        console.log('Markets found 3.case:', markets);
+                        console.log('Wines found 2.case:', wines)
+                        console.log('Markets found 3.case:', markets)
                         
                     
                         expect(wines).to.be.an('array')
@@ -121,14 +121,14 @@ describe('findWinesAndMarkets', () => {
                                     return logic.findWinesAndMarkets(user.id, [41.38091, 2.0811182], 500, 6, 8, 'white') 
                                     })
                                     .then(({ markets, wines }) => {
-                                        console.log('Wines found 3.case:', wines);
-                                        console.log('Markets found 3.case:', markets);
+                                        console.log('Wines found 3.case:', wines)
+                                        console.log('Markets found 3.case:', markets)
                                         
                                     
                                         expect(wines).to.be.an('array')
                                         expect(wines).to.have.lengthOf(1)
                                 
-                                        expect(wines.title).to.equal('Albariño Trás Montes')
+                                        expect(wines[0].title).to.equal('Albariño Trás Montes') 
                                     })
                                 )
                             )

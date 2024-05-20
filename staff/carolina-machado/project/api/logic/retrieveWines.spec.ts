@@ -1,4 +1,4 @@
-// @ts-nocheck
+/* // @ts-nocheck
 import dotenv from 'dotenv'
 
 import mongoose from 'mongoose'
@@ -79,7 +79,7 @@ describe('retrieveWines', () => {
                     )
             )
     )
-
+ */
 /*
     it('fails on non-string userId', () => 
         Promise.all([
@@ -112,5 +112,5 @@ describe('retrieveWines', () => {
             )
     )
                             */
-    after(() => mongoose.disconnect())
-})
+/*     after(() => mongoose.disconnect())
+}) */

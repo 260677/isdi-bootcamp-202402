@@ -1,88 +1,88 @@
-import logic from '../logic';
-import { useState, useEffect } from 'react';
-import React from 'react';
-import { useContext } from '../context.ts';
-import ExpandedWineDetails from './ExpandedWineDetails'; 
+import logic from '../logic'
+import { useState, useEffect } from 'react'
+import React from 'react'
+import { useContext } from '../context.ts'
+import ExpandedWineDetails from './ExpandedWineDetails'
 
 function WinePriceFilter({ coordinates }) {
   const { showFeedback } = useContext();
-  const [lowestPrice, setLowestPrice] = useState('');
-  const [highestPrice, setHighestPrice] = useState('');
-  const [proximityRange, setProximityRange] = useState('' || 1000);
-  const [filteredWines, setFilteredWines] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
-  const [isPressed250, setIsPressed250] = useState(false);
-  const [isPressed500, setIsPressed500] = useState(false);
-  const [isPressed750, setIsPressed750] = useState(false);
-  const [isPressed1km, setIsPressed1km] = useState(false);
-  const [isPressedWhite, setIsPressedWhite] = useState(false);
-  const [isPressedRed, setIsPressedRed] = useState(false);
-  const [isPressedPink, setIsPressedPink] = useState(false);
-  const [expandedWine, setExpandedWine] = useState(null);
-  
+  const [lowestPrice, setLowestPrice] = useState('')
+  const [highestPrice, setHighestPrice] = useState('')
+  const [proximityRange, setProximityRange] = useState('' || 1000)
+  const [filteredWines, setFilteredWines] = useState([])
+  const [selectedType, setSelectedType] = useState('')
+  const [isPressed250, setIsPressed250] = useState(false)
+  const [isPressed500, setIsPressed500] = useState(false)
+  const [isPressed750, setIsPressed750] = useState(false)
+  const [isPressed1km, setIsPressed1km] = useState(false)
+  const [isPressedWhite, setIsPressedWhite] = useState(false)
+  const [isPressedRed, setIsPressedRed] = useState(false)
+  const [isPressedPink, setIsPressedPink] = useState(false)
+  const [expandedWine, setExpandedWine] = useState(null)
 
   const handleLowestPriceChange = (event) => {
-    setLowestPrice(event.target.value);
-  };
+    setLowestPrice(event.target.value)
+  }
 
   const handleHighestPriceChange = (event) => {
-    setHighestPrice(event.target.value);
-  };
+    setHighestPrice(event.target.value)
+  }
 
   const handleProximityChange = (range) => {
-    setProximityRange(range);
+    setProximityRange(range)
     switch (range) {
       case '250':
-        setIsPressed250(true);
-        setIsPressed500(false);
-        setIsPressed750(false);
-        setIsPressed1km(false);
-        break;
+        setIsPressed250(true)
+        setIsPressed500(false)
+        setIsPressed750(false)
+        setIsPressed1km(false)
+        break
       case '500':
-        setIsPressed250(false);
-        setIsPressed500(true);
-        setIsPressed750(false);
-        setIsPressed1km(false);
-        break;
+        setIsPressed250(false)
+        setIsPressed500(true)
+        setIsPressed750(false)
+        setIsPressed1km(false)
+        break
       case '750':
-        setIsPressed250(false);
-        setIsPressed500(false);
-        setIsPressed750(true);
-        setIsPressed1km(false);
-        break;
+        setIsPressed250(false)
+        setIsPressed500(false)
+        setIsPressed750(true)
+        setIsPressed1km(false)
+        break
       case '1km':
-        setIsPressed250(false);
-        setIsPressed500(false);
-        setIsPressed750(false);
-        setIsPressed1km(true);
-        break;
+        setIsPressed250(false)
+        setIsPressed500(false)
+        setIsPressed750(false)
+        setIsPressed1km(true)
+        break
       default:
-        break;
+        setProximityRange(1000)
+        break
     }
-  };
+  }
 
   const handleSelectType = (type) => {
     setSelectedType(type);
     switch (type) {
       case 'red':
-        setIsPressedRed(true);
-        setIsPressedWhite(false);
-        setIsPressedPink(false);
-        break;
+        setIsPressedRed(true)
+        setIsPressedWhite(false)
+        setIsPressedPink(false)
+        break
 
       case 'white':
-        setIsPressedRed(false);
-        setIsPressedWhite(true);
-        setIsPressedPink(false);
-        break;
+        setIsPressedRed(false)
+        setIsPressedWhite(true)
+        setIsPressedPink(false)
+        break
 
       case 'pink':
-        setIsPressedRed(false);
-        setIsPressedWhite(false);
-        setIsPressedPink(true);
-        break;
+        setIsPressedRed(false)
+        setIsPressedWhite(false)
+        setIsPressedPink(true)
+        break
     }
-  };
+  }
 
   const handleApplyFilter = async () => {
     try {
@@ -91,24 +91,24 @@ function WinePriceFilter({ coordinates }) {
 
       let proximity;
       switch (proximityRange) {
-        case '0-250':
-          proximity = 250;
-          break;
-        case '250-500':
-          proximity = 500;
-          break;
-        case '500-750':
-          proximity = 750;
-          break;
-        case '750-1000':
-          proximity = 1000;
-          break;
+        case '250':
+          proximity = 250
+          break
+        case '500':
+          proximity = 500
+          break
+        case '750':
+          proximity = 750
+          break
+        case '1km':
+          proximity = 1000
+          break
         default:
-          proximity = '';
-          break;
+          proximity = 1000
+          break
       }
 
-      const type = selectedType;
+      const type = selectedType
 
       const fetchData = async () => {
         try {
@@ -129,23 +129,21 @@ function WinePriceFilter({ coordinates }) {
   function renderStars(rate) {
     const filledStars = '★'.repeat(rate);
     const emptyStars = '☆'.repeat(6 - rate);
-    return `${filledStars}${emptyStars} (${rate}/5)`;
+    return `${filledStars}${emptyStars} (${rate}/5)`
   }
 
   useEffect(() => {
     console.log('Expanded Wine:', expandedWine);
-  }, [expandedWine]);
+  }, [expandedWine])
 
   const toggleExpanded = (wineId, marketId) => {
 
-    const market = filteredWines.markets.find((m) => m.id === marketId);
-  // Find the wine object from filteredWines based on wineId
-    const wine = filteredWines.wines.find((w) => w.id === wineId);
+    const market = filteredWines.markets.find((m) => m.id === marketId)
+    // Find the wine object from filteredWines based on wineId
+    const wine = filteredWines.wines.find((w) => w.id === wineId)
 
-    setExpandedWine({ wineId, marketId, market, wine });
-  };
-
-
+    setExpandedWine({ wineId, marketId, market, wine })
+  }
 
   return (
     <>
@@ -222,9 +220,9 @@ function WinePriceFilter({ coordinates }) {
         <button className="bg-white hover:bg-fuchsia-200 py-2 px-16 text-fuchsia-800 font-semibold mb-2 mt-4 rounded bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased" onClick={handleApplyFilter}>Seek Wine</button>
       </div>
 
-      <ExpandedWineDetails  renderStars={renderStars} toggleExpanded={toggleExpanded} filteredWines={filteredWines} expandedWine={expandedWine}/>
+      <ExpandedWineDetails renderStars={renderStars} toggleExpanded={toggleExpanded} filteredWines={filteredWines} expandedWine={expandedWine} />
     </>
-  );
-};
+  )
+}
 
-export default WinePriceFilter;
+export default WinePriceFilter

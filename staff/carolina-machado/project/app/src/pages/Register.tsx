@@ -3,14 +3,13 @@ import { logger, showFeedback } from '../utils'
 import logic from '../logic'
 import pics from './pics'
 import Logo from '../img/wiineseekertrans2.png'
+import { useNavigate } from 'react-router-dom';
 
 function Register({ onUserRegistered, onLoginClick }) {
 
     const handleSubmit = event => {
         event.preventDefault()
-
         const form = event.target
-
         const name = form.name.value
         const email = form.email.value
         const password = form.password.value
@@ -19,20 +18,16 @@ function Register({ onUserRegistered, onLoginClick }) {
             logic.registerUser(name, email, password)
                 .then(() => {
                     form.reset()
-
                     onUserRegistered()
                 })
                 .catch(error => showFeedback(error, 'error'))
-
         } catch (error) {
             showFeedback(error)
         }
-
     }
 
     const handleLoginClick = event => {
         event.preventDefault()
-
         onLoginClick()
     }
 
@@ -63,15 +58,9 @@ function Register({ onUserRegistered, onLoginClick }) {
                     <a href="" className="inline-block align-baseline italic text-sm text-black  hover:text-purple-900 antialiased" onClick={handleLoginClick}>Login</a>
 
                 </form>
-
-
             </div>
-
-
-
         </main>
     </>
 }
-
 
 export default Register

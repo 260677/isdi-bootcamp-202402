@@ -17,8 +17,8 @@
     "populate-market-mercadona": "tsx data/populate-market-mercadona.ts",
     "populate-condis": "tsx data/populate-condis.ts",
     "populate-market-condis": "tsx data/populate-market-condis.ts",
-    "populate-markets-final": "tsx data/populate-markets-final.ts"
-
+    "populate-markets-final": "tsx data/populate-markets-final.ts",
+    "populate-wines-final": "tsx data/populate-wines-final.ts"
   },
   "keywords": [],
   "author": "",

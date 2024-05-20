@@ -9,18 +9,19 @@ import WinePriceFilter from '../components/WinePriceFilter'
 import GeoLocation from '../components/GeoLocation'
 import ExpandedWineDetails from '../components/ExpandedWineDetails'
 import Map from '..components/Map'
+import { useNavigate } from 'react-router-dom';
 
 function Home({ onUserLoggedOut }) {
-  const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
-  const [userLocation, setUserLocation] = useState(null);
+  const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null })
+  const [userLocation, setUserLocation] = useState(null)
 
   const onLogout = () => {
-    onUserLoggedOut();
-  };
+    onUserLoggedOut()
+  }
 
   const handleCoordinates = (coordinates) => {
-    setUserLocation(coordinates);
-  };
+    setUserLocation(coordinates)
+  }
 
   return (
     <main>
@@ -28,10 +29,9 @@ function Home({ onUserLoggedOut }) {
       <div>
         <GeoLocation coordinates={coordinates} setCoordinates={setCoordinates} onCoordinatesChange={handleCoordinates} />
         <WinePriceFilter coordinates={coordinates} />
-        {/* <ExpandedWineDetails coordinates={coordinates} setCoordinates={setCoordinates} onCoordinatesChange={handleCoordinates}/> */}
       </div>
     </main>
-  );
+  )
 }
 
-export default Home;
+export default Home

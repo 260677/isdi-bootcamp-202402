@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+/* import { Schema } from 'mongoose'
 
 const { Types: { ObjectId } } = Schema
 
@@ -24,7 +24,7 @@ function retrieveWines(userId: string): Promise<[{ image: String, title: String,
 }
 
 export default retrieveWines
-
+ */
 
 
 

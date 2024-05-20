@@ -1,8 +1,7 @@
 
-import { logger, showFeedback } from '../utils'
+import { showFeedback } from '../utils'
 import logic from '../logic'
 import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
 import Logo from '../img/wiineseekertrans2.png'
 import exiticon from '../img/blacklogouticon.svg'
 
@@ -45,8 +44,7 @@ function Header({ onUserLoggedOut }) {
             </button>
         </div>
     </header >
-    );
+    )
 }
-
 
 export default Header

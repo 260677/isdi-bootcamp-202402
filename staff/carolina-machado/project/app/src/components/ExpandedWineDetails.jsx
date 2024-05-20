@@ -1,13 +1,7 @@
+import React from 'react'
+import Map from './Map'
+import WineRating from './WineRating'
 import { useState, useEffect } from 'react';
-import L from 'leaflet';
-import WinePriceFilter from './WinePriceFilter'
-import GeoLocation from './GeoLocation'
-import { useContext } from '../context.ts';
-import React from 'react';
-import Map from './Map';
-
-
-
 
 function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expandedWine }) {
   return (
@@ -18,16 +12,16 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
           filteredWines.markets.map((market) => (
             <React.Fragment key={market.id}>
               {market.wines.map((wineId) => {
-                const wine = filteredWines.wines.find((w) => w.id === wineId);
-                const isExpanded = expandedWine && expandedWine.wineId === wine.id && expandedWine.marketId === market.id;
+                const wine = filteredWines.wines.find((w) => w.id === wineId)
+                const isExpanded = expandedWine && expandedWine.wineId === wine.id && expandedWine.marketId === market.id
 
                 return (
                   <React.Fragment key={`${market.id}-${wine.id}`}>
                     <a
                       href="#"
                       onClick={(e) => {
-                        e.preventDefault();
-                        toggleExpanded(wine.id, market.id);
+                        e.preventDefault()
+                        toggleExpanded(wine.id, market.id)
                       }}
                     >
                       <li className={`flex items-center mt-4 border p-50px ${isExpanded ? 'expanded' : ''}`}>
@@ -40,7 +34,9 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                             <div>
                               <h2 className="text-lg text-gray-700 font-semibold mb-8px">{wine.title}</h2>
                               <p className="text-gray-600 font-light">Price: €{wine.price}</p>
-                              <p className="text-yellow-700 font-light">{renderStars(wine.rates)}</p>
+                              <p className="text-yellow-700 text-ml font-light">
+                                Rating: {wine.rates.length > 1 ? renderStars(wine.averageRating) : renderStars(wine.rates[0])}
+                              </p>
                               {market && <p className="text-gray-600 font-light">Market: {market.title}</p>}
                             </div>
                           </>
@@ -58,12 +54,14 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                             <h2 className="text-lg text-gray-700 font-semibold mb-8px">{wine.title}</h2>
                             <p className="text-ml text-gray-700 font-thin mb-8px">{wine.description}</p>
                             <p className="text-gray-700 text-ml font-light">Price: €{wine.price}</p>
-                            <p className="text-yellow-700 text-ml font-light">
-                              Rating: {renderStars(wine.rates)}
-                              <span className="text-yellow-700 text-sm font-thin italic">Help us to improve! Rate the wine!</span>
-                            </p>
+                            <div>
+                              <p className="text-yellow-700 text-ml font-light">
+                                Rating: {wine.rates.length > 1 ? renderStars(wine.averageRating) : renderStars(wine.rates[0])}
+                              </p>
+                              <WineRating wineId={wineId} />
+                            </div>
                             {market && (
-                              <div className="market-details mt-10">
+                              <div className="market-details mb-4">
                                 <p className="text-ml text-gray-700 font-semibold mb-8px">{market.title}</p>
                                 <p className="text-gray-700 text-ml font-light">{market.address}</p>
                               </div>
@@ -72,23 +70,19 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                         </div>
                       </li>
                     )}
-
                     {isExpanded && (
-                      <div className="relative h-96">
-                        <Map coordinates={expandedWine.market.location.coordinates} />
+                      <div className="relative h-96 mb-4">
+                        <Map coordinates={expandedWine.market.location.coordinates} expandedWine={expandedWine} />
                       </div>
                     )}
                   </React.Fragment>
-                );
+                )
               })}
             </React.Fragment>
           ))}
       </ul>
-
-
-
     </div>
-  );
+  )
 }
 
-export default ExpandedWineDetails;
+export default ExpandedWineDetails
