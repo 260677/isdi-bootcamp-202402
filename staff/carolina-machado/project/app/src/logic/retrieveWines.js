@@ -1,12 +1,12 @@
-/* import { validate, errors } from 'com'
+import { validate, errors } from 'com'
 
-/* function retrieveWines() {
-    
+
+function retrieveWines() {
     validate.token(sessionStorage.token)
 
     //logic
     return fetch(`${import.meta.env.VITE_API_URL}/wines`, {
-        headers: {
+    headers: {
             'Authorization': `Bearer ${sessionStorage.token}`
         }
     })
@@ -23,6 +23,5 @@
                 })
         })
 }
- */
-// export default retrieveWines
- */
+
+export default retrieveWines

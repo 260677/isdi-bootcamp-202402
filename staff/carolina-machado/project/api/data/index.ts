@@ -27,6 +27,34 @@ const user = new Schema<UserType> ({
     }
 })
 
+type ReviewType = {
+    
+    user: ObjectId
+    comment: string
+    createdAt: Date
+}
+
+const review = new Schema<ReviewType>({
+    
+    user: {
+        type: ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    
+    comment: {
+        type: String,
+        required: true
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+
+
+})
+
 type WineType = {
     image: string,
     title: string,
@@ -34,8 +62,9 @@ type WineType = {
     type: 'red' | 'white' | 'pink',
     price: number,
     rates: number[],
-    averageRating: number 
-};
+    averageRating: number,
+    comments: ObjectId[]
+}
 
 const wine = new Schema<WineType>({
     image: {
@@ -69,7 +98,12 @@ const wine = new Schema<WineType>({
         default: 0,
         min: 0,
         max: 5 
-    }
+    },
+    comments: {
+        type: [ObjectId],
+        ref: 'Review',
+        default: [],
+      }
 })
 
 type PointType = {
@@ -89,14 +123,36 @@ const point = new Schema<PointType> ({
     }
 })
 
+type HourType = {
+    day: string
+    open: string
+    close: string
+  };
+ 
+  const hour = new Schema<HourType> ({
+    day: {
+      type: String,
+      required: true
+    },
+    open: {
+      type: String,
+      required: true
+    },
+    close: {
+      type: String,
+      required: true
+    }
+  })
+
 type MarketType = {
     title: string
     address: string
     location: PointType
     wines: ObjectId[]
+    hours: HourType[]
 }
 
-const market = new Schema ({
+const market = new Schema<MarketType> ({
     title: {
         type: String,
         required: true
@@ -110,36 +166,19 @@ const market = new Schema ({
         required: true,
         coordinates: { type: [Number], default: [0, 0] }
     },
+    
     wines: [{
         type: ObjectId,
         ref: 'Wine'
-    }]
+    }],
+    hours: {
+        type: [hour],
+        required: true
+      }
 })
 
 market.index({ location: '2dsphere' })
 
-type ReviewType = {
-    wine: ObjectId
-    rate: number
-    comment?: string
-}
-
-const review = new Schema<ReviewType>({
-    wine: {
-        type: ObjectId,
-        required: true,
-        ref: 'Wine'
-    },
-    rate: {
-        type: Number,
-        required: true,
-        enum: [1, 2, 3, 4, 5]
-    },
-    comment: {
-        type: String,
-        required: true
-    }
-})
 
 
 const User = model<UserType>('User', user)
@@ -147,6 +186,7 @@ const Wine = model<WineType>('Wine', wine)
 const Point = model<PointType>('Point', point)
 const Market = model<MarketType>('Market', market)
 const Review = model<ReviewType>('Review', review)
+const Hour = model<HourType>('Hour', hour)
 
 
 export {
@@ -160,6 +200,8 @@ export {
     MarketType,
     ReviewType,
     Review,
+    HourType,
+    Hour
 }
 
 

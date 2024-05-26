@@ -5,13 +5,13 @@ import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Logo from '../img/wiineseekertrans2.png'
 import Header from '../components/Header'
-import WinePriceFilter from '../components/WinePriceFilter'
+import WineFilter from '../components/WineFilter'
 import GeoLocation from '../components/GeoLocation'
-import ExpandedWineDetails from '../components/ExpandedWineDetails'
+import RenderWines from '../components/RenderWines'
 import Map from '..components/Map'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
-function Home({ onUserLoggedOut }) {
+function Home({ onUserLoggedOut, userId }) {
   const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null })
   const [userLocation, setUserLocation] = useState(null)
 
@@ -23,12 +23,13 @@ function Home({ onUserLoggedOut }) {
     setUserLocation(coordinates)
   }
 
+  logger.debug('Home -> render')
   return (
     <main>
-      <Header onUserLoggedOut={onLogout} />
+      <Header onUserLoggedOut={onLogout} coordinates={coordinates} />
       <div>
         <GeoLocation coordinates={coordinates} setCoordinates={setCoordinates} onCoordinatesChange={handleCoordinates} />
-        <WinePriceFilter coordinates={coordinates} />
+        <WineFilter coordinates={coordinates} userId={userId} />
       </div>
     </main>
   )

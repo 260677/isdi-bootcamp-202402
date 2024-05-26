@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
-import { User, Wine, Point, Market, Review } from '.'
-import { ObjectId } from 'mongodb'
+import { Point, Market } from '.'
 
 mongoose.connect('mongodb://localhost:27017/project')
     .then(() => Point.deleteMany())
@@ -39,7 +38,7 @@ mongoose.connect('mongodb://localhost:27017/project')
             Market.create({ title: 'BonArea València', address: 'Calle València, 31', location: point13, wines: ['662e80da9bd0437d6003be78', '662e80da9bd0437d6003be87', '662bc0b43f7b2f41c2b230ea'] }),
             Market.create({ title: 'BonArea Rocafort', address: 'Calle Rocafort, 56', location: point14, wines: ['662e80da9bd0437d6003be78', '662e80da9bd0437d6003be87', '662bc0b43f7b2f41c2b230ea'] }),
             Market.create({ title: 'Mercadona Villadomat', address: 'Calle Viladomat, 279', location: point15, wines: ['662e80da9bd0437d6003be78', '662e80da9bd0437d6003be87', '662bc0b43f7b2f41c2b230ea'] }),
-        ]);
+        ])
     })
     .then(() => mongoose.disconnect())
     .then(() => console.log('populated'))

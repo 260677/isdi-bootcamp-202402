@@ -1,6 +1,6 @@
 import { validate, errors } from 'com'
 
-function handleSubmitRating(userRating, wineId) {
+function addNewRating(userRating, wineId) {
     let url = `${import.meta.env.VITE_API_URL}/wines/${wineId}/rate`
 
     const requestBody = {
@@ -17,13 +17,16 @@ function handleSubmitRating(userRating, wineId) {
     })
     .then(res => {
         if (res.status === 200) return res.json()
+
         return res.json().then(body => {
             const { error, message } = body
+
             const constructor = errors[error]
+
             throw new constructor(message)
-        });
+        })
     })
     
 }
 
-export default handleSubmitRating;
+export default addNewRating

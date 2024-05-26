@@ -3,7 +3,7 @@ import Map from './Map'
 import WineRating from './WineRating'
 
 
-function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expandedWine }) {
+function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine, userId }) {
   return (
     <div>
 
@@ -24,7 +24,7 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                         toggleExpanded(wine.id, market.id)
                       }}
                     >
-                      <li className={`flex items-center mt-4 border p-50px ${isExpanded ? 'expanded' : ''}`}>
+                      <li className={`flex items-center mt-16 mb-16  p-50px ${isExpanded ? 'expanded' : ''}`}>
                         {/* Render the non-expanded content */}
                         {!isExpanded && (
                           <>
@@ -45,9 +45,9 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                     </a>
                     {/* Render the expanded content */}
                     {isExpanded && (
-                      <li className="flex items-center justify-center">
+                      <li className="flex items-center justify-center ml-4 mr-4 mb-4">
                         <div className="expanded-detail-content transition delay-1000 duration-1000 ease-in-out">
-                          <div className="flex justify-center">
+                          <div className="flex justify-center mb-8 ">
                             <img src={wine.image} alt="wine image" className="w-60 h-60" />
                           </div>
                           <div>
@@ -58,7 +58,7 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
                               <p className="text-yellow-700 text-ml font-light">
                                 Rating: {wine.rates.length > 1 ? renderStars(wine.averageRating) : renderStars(wine.rates[0])}
                               </p>
-                              <WineRating wineId={wineId} />
+                              <WineRating wineId={wineId} expandedWine={expandedWine} userId={userId}/>
                             </div>
                             {market && (
                               <div className="market-details mb-4">
@@ -85,4 +85,4 @@ function ExpandedWineDetails({ renderStars, toggleExpanded, filteredWines, expan
   )
 }
 
-export default ExpandedWineDetails
+export default RenderWines

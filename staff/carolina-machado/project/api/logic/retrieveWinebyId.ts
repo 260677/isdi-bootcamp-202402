@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose'
 import { Wine } from '../data/index.ts'
 import { validate, errors } from 'com'
 

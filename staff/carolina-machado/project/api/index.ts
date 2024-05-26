@@ -11,8 +11,9 @@ import cors from 'cors'
 import findWinesAndMarkets from './logic/findWinesAndMarkets.ts'
 import retrieveWineById from './logic/retrieveWinebyId.ts'
 import addNewRating from './logic/addNewRating.ts'
-
-
+import addNewReview from './logic/addNewReview.ts'
+import retrieveUserWithId from './logic/retrieveUserWithId.ts'
+import retrieveReviews from './logic/retrieveReviews.ts'
 
 dotenv.config()
 
@@ -185,19 +186,14 @@ mongoose.connect(MONGODB_URL)
                     res.status(406).json({ error: error.constructor.name, message: error.message })
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
-
                     res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
                     logger.warn(error.message)
-
                     res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
-       
-
-        // Endpoint to rate a wine
         api.post('/wines/:wineId/rate', jsonBodyParser, async (req, res) => {
             try {
                 const { wineId } = req.params
@@ -209,16 +205,22 @@ mongoose.connect(MONGODB_URL)
 
                 res.json({ message: 'Rating updated successfully', newAverageRating })
             } catch (error) {
-                console.error('Error updating rating:', error)
-                if (error instanceof NotFoundError) {
-                    res.status(404).json({ error: error.message })
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
-                    res.status(500).json({ error: 'Internal server error' })
+                    logger.warn(error.message)
+
+                    res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
-        // Endpoint to fetch wine data by ID
         api.get('/wines/:wineId', async (req, res) => {
             try {
                 const { wineId } = req.params
@@ -226,16 +228,87 @@ mongoose.connect(MONGODB_URL)
                 const wine = await retrieveWineById(wineId)
                 res.json(wine);
             } catch (error) {
-                console.error('Error fetching wine data:', error)
-                if (error instanceof NotFoundError) {
-                    res.status(404).json({ error: error.message })
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
-                    res.status(500).json({ error: 'Internal server error' })
+                    logger.warn(error.message)
+
+                    res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
+        api.post('/wines/:wineId/reviews', jsonBodyParser, async (req, res) => {
+            const { userId, comment } = req.body;
+            const { wineId } = req.params;
         
+            // Trim the comment to remove leading and trailing spaces
+            const trimmedComment = comment.trim();
+        
+      
+            if (!trimmedComment) {
+                res.status(406).json({ error: 'ContentError', message: 'Comment cannot be empty or contain only spaces' });
+                return;
+            }
+        
+            console.log('Request body:', req.body);
+            console.log('userId:', userId);
+            console.log('comment:', trimmedComment);
+        
+            try {
+                const newReview = await addNewReview(userId, wineId, trimmedComment)
+                res.status(201).json(newReview);
+            } catch (error) {
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
+                } else {
+                    logger.warn(error.message)
+                    res.status(500).json({ error: SystemError.name, message: error.message })
+                }
+            }
+        })
+
+        api.get('/users/:userId/:targetUserId', async (req, res) => {
+            const { userId, targetUserId } = req.params
+
+            try {
+                const user = await retrieveUserWithId(userId, targetUserId)
+                res.status(200).json(user);
+            } catch (error) {
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
+                } else {
+                    logger.warn(error.message)
+                    res.status(500).json({ error: SystemError.name, message: error.message })
+                }
+            }
+        })
+
+        api.get('/wines/:wineId/reviews', async (req, res) => {
+            try {
+              const { wineId } = req.params;
+              const reviews = await retrieveReviews(wineId)
+              res.json(reviews);
+            } catch (error) {
+              console.error('Failed to fetch comments:', error)
+              res.status(500).json({ error: 'Failed to fetch comments' })
+            }
+          })
+          
 
         api.listen(PORT, () => logger.info(`API listening on port ${PORT}`))
     })

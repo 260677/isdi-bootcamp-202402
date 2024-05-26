@@ -1,19 +1,14 @@
-/* // @ts-nocheck
+// @ts-nocheck
 import dotenv from 'dotenv'
-
 import mongoose from 'mongoose'
-import { User, Wine, WineType } from '../data/index.ts'
-
+import { User, Wine } from '../data/index.ts'
 import logic from './index.ts'
 import { expect } from 'chai'
 import { errors } from 'com'
 
 dotenv.config()
 
-const { Types: { ObjectId } } = mongoose
 const { NotFoundError } = errors
-
-const { DuplicityError, CredentialsError } = errors
 
 describe('retrieveWines', () => {
     before(() => mongoose.connect(process.env.MONGODB_TEST_URL))
@@ -79,38 +74,9 @@ describe('retrieveWines', () => {
                     )
             )
     )
- */
-/*
-    it('fails on non-string userId', () => 
-        Promise.all([
-            User.deleteMany(),
-            Wine.deleteMany()
-        ])
-            .then(() => 
-                User.create({ username: 'PereHDZ', email: 'pere@hdz.com', password: 'cuquis1992', avatar: null })
-                    .then(user => 
-                        Promise.all([
-                            Race.create({ name: 'Human', description: 'I am a Human'}),
-                            Race.create({ name: 'Elf', description: 'I am an Elf'}),
-                            Race.create({ name: 'Dwarf', description: 'I am a Dwarf'}),
-                        ])
-                            .then(([race1, race2, race3]) => {
-                                let errorThrown
-                                const userId = 26
+ 
 
-                                try {
-                                    //@ts-ignore
-                                    logic.retrieveRaces(userId)
-                                } catch (error) {
-                                    errorThrown = error
-                                }
-
-                                expect(errorThrown).to.be.instanceOf(TypeError)
-                                expect(errorThrown.message).to.equal('userId 26 is not a string')
-                            })
-                    )
-            )
-    )
-                            */
-/*     after(() => mongoose.disconnect())
-}) */
+   
+                            
+    after(() => mongoose.disconnect())
+}) 

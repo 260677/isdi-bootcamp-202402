@@ -3,7 +3,7 @@ import { logger, showFeedback } from '../utils'
 import logic from '../logic'
 import pics from './pics'
 import Logo from '../img/wiineseekertrans2.png'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
 function Login({ onUserLoggedIn, onRegisterClick }) {
 
@@ -20,9 +20,9 @@ function Login({ onUserLoggedIn, onRegisterClick }) {
                     form.reset
                     onUserLoggedIn()
                 })
-                .catch(error => showFeedback(error, 'error'))
+                .catch(error => alert(error))
         } catch (error) {
-            showFeedback(error)
+            alert(error)
         }
     }
 
@@ -31,6 +31,7 @@ function Login({ onUserLoggedIn, onRegisterClick }) {
         onRegisterClick()
     }
 
+    logger.debug('Login -> render')
     return <>
         <main className="h-screen flex justify-center flex-col items-center">
             <div>

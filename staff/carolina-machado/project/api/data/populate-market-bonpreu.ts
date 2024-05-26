@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
-import { User, Wine, Point, Market, Review } from '.'
-import { ObjectId } from 'mongodb'
+import { Point, Market } from '.'
+
 
 mongoose.connect('mongodb://localhost:27017/project')
     .then(() => Point.deleteMany())

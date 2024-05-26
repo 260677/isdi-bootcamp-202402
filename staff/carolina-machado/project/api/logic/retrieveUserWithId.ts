@@ -1,10 +1,9 @@
-import { Schema } from 'mongoose'
-const { Types: { ObjectId } } = Schema
 import { User } from '../data/index.ts'
 import { validate, errors } from 'com'
+
 const { NotFoundError, SystemError } = errors
 
-function retrieveUser(userId: string, targetUserId: string): Promise<{ name: string, email: string }> {
+function retrieveUserWithId(userId: string, targetUserId: string): Promise<{ name: string, email: string, userId: string }> {
     validate.text(userId, 'userId', true)
     validate.text(targetUserId, 'targetUserId', true)
 
@@ -18,8 +17,8 @@ function retrieveUser(userId: string, targetUserId: string): Promise<{ name: str
         .then(user => {
             if (!user) throw new NotFoundError('target user not found')
 
-            return { name: user.name, email: user.email }
+            return { name: user.name, email: user.email, userId: targetUserId }
         })
 }
 
-export default retrieveUser
+export default retrieveUserWithId

@@ -1,8 +1,8 @@
 // @ts-nocheck
 import mongoose from 'mongoose'
 
-import { User, Wine, Point, Market, Review } from '.'
-import { ObjectId } from 'mongodb'
+import { Point, Market } from '.'
+
 
 mongoose.connect('mongodb://localhost:27017/test')
     .then(() => Point.deleteMany())
@@ -38,5 +38,5 @@ mongoose.connect('mongodb://localhost:27017/test')
     })
     .then(() => mongoose.disconnect())
     .then(() => console.log('populated'))
-    .catch(console.error);
+    .catch(console.error)
 

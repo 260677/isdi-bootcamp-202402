@@ -9,7 +9,7 @@ import { errors } from 'com'
 dotenv.config()
 
 const { Types: { ObjectId } } = mongoose
-const { NotFoundError } = errors
+const { NotFoundError, SystemError  } = errors
 
 describe('addNewRating', () => {
     before(() => mongoose.connect(process.env.MONGODB_TEST_URL))
@@ -20,7 +20,7 @@ describe('addNewRating', () => {
             Wine.deleteMany(),
             Market.deleteMany(),
         ])
-    );
+    )
 
     it('adds a new rating of 5 to a wine that already had a rating of 4, resulting in a new average rating of 4.5', async () => {
         const user = await User.create({ name: 'Carol Machado', email: 'carol@mac.com', password: '123carol123' })
@@ -40,6 +40,36 @@ describe('addNewRating', () => {
         expect(updatedWine.averageRating).to.equal(4.5)
         expect(updatedWine.rates).to.include(5)
     })
+
+    it('adds a new rating of 3 to a wine that already had ratings of 4, 5, and 3, resulting in a new average rating of 3.8', async () => {
+        const user = await User.create({ name: 'Carol Machado', email: 'carol@mac.com', password: '123carol123' })
+        
+        const wine2 = await Wine.create({ image: `https://images2.imgbox.com/dd/94/DpvEjiXU_o.png`, title: 'Another Wine', description: 'A description of another wine', type: 'white', price: 12.95, rates: [4, 5, 3], averageRating: 4 })
+
+        const market3 = await Market.create({ title: 'Market One', address: 'Market Address 1', location: { type: 'Point', coordinates: [41.4020559, 2.2041401] }, wines: [wine2._id] });
+        const market4 = await Market.create({ title: 'Market Two', address: 'Market Address 2', location: { type: 'Point', coordinates: [41.4020559, 2.2041401] }, wines: [wine2._id] })
+
+        const newAverageRating = await logic.addNewRating(wine2._id.toString(), 3)
+
+        const updatedWine = await Wine.findById(wine2._id).lean().exec()
+        
+        expect(newAverageRating).to.equal(3.8)
+        expect(updatedWine.averageRating).to.equal(3.8)
+        expect(updatedWine.rates).to.include(3)
+    })
+
+    it('throws an error when trying to add a rating to a non-existent wine', async () => {
+        const nonExistentWineId = new ObjectId().toString()
+
+        try {
+            await logic.addNewRating(nonExistentWineId, 5)
+            throw new Error('Expected error was not thrown')
+        } catch (error) {
+            expect(error).to.be.instanceOf(SystemError)
+            expect(error.message).to.equal('Error updating rating: Wine not found')
+        }
+    })
+
 
     after(() => mongoose.disconnect())
 })

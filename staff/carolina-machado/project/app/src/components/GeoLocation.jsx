@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
 
-function GeoLocation({ coordinates, setCoordinates }) {
-  const [error, setError] = useState(null)
+function GeoLocation({ setCoordinates }) {
+  const [ setError ] = useState(null)
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -20,23 +20,7 @@ function GeoLocation({ coordinates, setCoordinates }) {
     }
   }, [setCoordinates])
 
-  return (
-    <>
-      <div>
-        {error ? (
-          <p>{error}</p>
-        ) : (
-          <>
-            {coordinates && coordinates.latitude !== null && coordinates.longitude !== null && (
-              <p>
-                Lat: {coordinates.latitude}, Long: {coordinates.longitude} (to be hidden)
-              </p>
-            )}
-          </>
-        )}
-      </div>
-    </>
-  );
+  
 }
 
-export default GeoLocation;
+export default GeoLocation

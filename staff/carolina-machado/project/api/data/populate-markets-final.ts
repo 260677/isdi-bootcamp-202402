@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
-import { User, Wine, Point, Market, Review } from '.'
-import { ObjectId } from 'mongodb'
+import { Point, Market } from '.'
 
 mongoose.connect('mongodb://localhost:27017/project')
     .then(() => Point.deleteMany())
@@ -35,7 +34,7 @@ mongoose.connect('mongodb://localhost:27017/project')
             Market.create({ title: 'Mercadona Provençals', address: 'Calle Provençals, 5', location: point5, wines: ['664623a5cd6d9cd0cce38e3c', '664623a5cd6d9cd0cce38e3a', '664623a5cd6d9cd0cce38e3b', '664623a5cd6d9cd0cce38e2b', '664623a5cd6d9cd0cce38e3f', '664623a5cd6d9cd0cce38e43', '664623a5cd6d9cd0cce38e44', '664623a5cd6d9cd0cce38e42', '664623a5cd6d9cd0cce38e41', '664623a5cd6d9cd0cce38e40', '664623a5cd6d9cd0cce38e3e', '664623a5cd6d9cd0cce38e3d'] }),
             Market.create({ title: 'Mercadona Villadomat', address: 'Calle Viladomat, 279', location: point15, wines: ['664623a5cd6d9cd0cce38e3c', '664623a5cd6d9cd0cce38e3a', '664623a5cd6d9cd0cce38e3b', '664623a5cd6d9cd0cce38e2b', '664623a5cd6d9cd0cce38e3f', '664623a5cd6d9cd0cce38e43', '664623a5cd6d9cd0cce38e44', '664623a5cd6d9cd0cce38e42', '664623a5cd6d9cd0cce38e41', '664623a5cd6d9cd0cce38e40', '664623a5cd6d9cd0cce38e3e', '664623a5cd6d9cd0cce38e3d'] }),
             Market.create({ title: 'Mercadona Veneçuela', address: 'Calle Veneçuela, 139', location: point16, wines: ['664623a5cd6d9cd0cce38e3c', '664623a5cd6d9cd0cce38e3a', '664623a5cd6d9cd0cce38e3b', '664623a5cd6d9cd0cce38e2b', '664623a5cd6d9cd0cce38e3f', '664623a5cd6d9cd0cce38e43', '664623a5cd6d9cd0cce38e44', '664623a5cd6d9cd0cce38e42', '664623a5cd6d9cd0cce38e41', '664623a5cd6d9cd0cce38e40', '664623a5cd6d9cd0cce38e3e', '664623a5cd6d9cd0cce38e3d'] }),
-        ]);
+        ])
     })
     .then(() => mongoose.disconnect())
     .then(() => console.log('populated'))

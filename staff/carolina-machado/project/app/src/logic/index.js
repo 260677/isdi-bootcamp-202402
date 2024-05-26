@@ -6,7 +6,10 @@ import retrieveUser from './retrieveUser'
 // import retrieveWines from './retrieveWines'
 import cleanUpLoggedInUserId from './cleanUpLoggedInUserId'
 import findWinesAndMarkets from './findWinesAndMarkets'
-import handleSubmitRating from './handleSubmitRating'
+import addNewRating from './addNewRating'
+import retrieveUserWithId from './retrieveUserWithId'
+import retrieveReviews from './retrieveReviews'
+import addNewReview from './addNewReview'
 
 const logic = {
 
@@ -18,7 +21,10 @@ const logic = {
     // retrieveWines,
     cleanUpLoggedInUserId,
     findWinesAndMarkets,
-    handleSubmitRating
+    addNewRating,
+    retrieveUserWithId,
+    retrieveReviews,
+    addNewReview
     
 
 

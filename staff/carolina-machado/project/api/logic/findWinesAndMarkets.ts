@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { Schema, ObjectId } from 'mongoose'
+import { ObjectId } from 'mongoose'
 import { User, Wine, Market } from '../data/index.ts'
 import { validate, errors } from 'com'
 
 
 
-const { NotFoundError, SystemError } = errors
+const { NotFoundError } = errors
 
 type Wine = {
     id: string
@@ -33,7 +33,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
     if (typeof proximity !== 'number') throw new TypeError('proximity is not a number')
     if (typeof minPrice !== 'number') throw new TypeError('minPrice is not a number')
     if (typeof maxPrice !== 'number') throw new TypeError('maxPrice is not a number')
-    validate.text(type)
+    if (type) validate.text(type)
 
     return (async () => {
         const user = await User.findById(userId)
@@ -90,7 +90,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
             delete market._id
 
             market.wines = market.wines.map(wineId => wineId.toString())
-        });
+        })
 
         wines.forEach(wine => {
             wine.id = wine._id.toString()
@@ -100,7 +100,7 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
        
 
         return { markets, wines }
-    })();
+    })()
 }
 
 export default findWinesAndMarkets

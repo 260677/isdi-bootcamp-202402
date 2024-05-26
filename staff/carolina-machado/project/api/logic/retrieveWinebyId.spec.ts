@@ -28,7 +28,7 @@ describe('retrieveWineById', () => {
             price: 6.45, 
             rates: [4, 5], 
             averageRating: 4.5 
-        });
+        })
 
         const retrievedWine = await logic.retrieveWineById(wine._id.toString())
 
@@ -39,7 +39,7 @@ describe('retrieveWineById', () => {
         expect(retrievedWine).to.have.property('price', wine.price)
         expect(retrievedWine).to.have.property('rates').that.includes(4, 5)
         expect(retrievedWine).to.have.property('averageRating', wine.averageRating)
-    });
+    })
 
     it('throws a NotFoundError when the wine does not exist', async () => {
         const nonExistingId = new mongoose.Types.ObjectId().toString()
@@ -51,7 +51,7 @@ describe('retrieveWineById', () => {
             expect(error).to.be.instanceOf(NotFoundError);
             expect(error.message).to.equal('Wine not found')
         }
-    });
+    })
 
     it('throws a SystemError for other errors', async () => {
         const invalidId = 'invalid-id'
@@ -62,7 +62,7 @@ describe('retrieveWineById', () => {
         } catch (error) {
             expect(error).to.be.instanceOf(SystemError)
         }
-    });
+    })
 
     after(() => mongoose.disconnect())
-});
+})

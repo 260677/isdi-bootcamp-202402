@@ -1,9 +1,7 @@
 // @ts-nocheck
 import mongoose from 'mongoose'
 
-import { User, Wine, Market, Experience } from '.'
-import { ObjectId } from 'mongodb'
-
+import { Wine } from '.'
 
 
 mongoose.connect('mongodb://localhost:27017/project')

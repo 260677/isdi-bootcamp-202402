@@ -1,20 +1,19 @@
 //@ts-nocheck
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
+import { User, Wine, Market } from '../data/index.ts'
+import logic from './index.ts'
+import { expect } from 'chai'
+import { errors } from 'com'
 
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import { User, Wine, Market } from '../data/index.ts';
-import logic from './index.ts';
-import { expect } from 'chai';
-import { errors } from 'com';
+dotenv.config()
 
-dotenv.config();
-
-const { Types: { ObjectId } } = mongoose;
-const { NotFoundError } = errors;
+const { Types: { ObjectId } } = mongoose
+const { NotFoundError } = errors
 
 
 describe('findWinesAndMarkets', () => {
-    before(() => mongoose.connect(process.env.MONGODB_TEST_URL));
+    before(() => mongoose.connect(process.env.MONGODB_TEST_URL))
 
     it('finds all the red wines in a collection of 2 reds and 1 white wine within specified proximity', () =>
         Promise.all([
@@ -134,6 +133,25 @@ describe('findWinesAndMarkets', () => {
                             )
                         )
                     )
+
+                    it('throws an error when the user does not exist', () =>
+                    Promise.all([
+                        User.deleteMany(),
+                        Wine.deleteMany(),
+                        Market.deleteMany(),
+                    ])
+                        .then(() => {
+                            const nonExistentUserId = new ObjectId().toString()
+                            return logic.findWinesAndMarkets(nonExistentUserId, [41.38091, 2.0811182], 500, 5, 10, 'red')
+                                .then(
+                                    () => { throw new Error('Expected error was not thrown') },
+                                    error => {
+                                        expect(error).to.be.instanceOf(NotFoundError)
+                                        expect(error.message).to.equal('User not found')
+                                    }
+                                )
+                        })
+                )
                 
 
     after(() => mongoose.disconnect())

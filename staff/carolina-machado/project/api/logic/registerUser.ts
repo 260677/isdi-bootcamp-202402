@@ -1,8 +1,6 @@
 // @ts-nocheck
 import { validate, errors } from 'com'
-
 import { UserType, User } from '../data/index.ts'
-
 const { DuplicityError, SystemError } = errors
 
 function registerUser(name: string, email: string, password: string): Promise<void> {

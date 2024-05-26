@@ -10,7 +10,7 @@ function Map({ coordinates, expandedWine }) {
     if (!mapRef.current) {
       // Create the map instance
       mapRef.current = L.map('map-container', {
-        scrollWheelZoom: false // Disable scroll wheel zoom
+        scrollWheelZoom: true // Disable scroll wheel zoom
       }).setView(coordinates, 15)
 
       // Add the TileLayer (map tiles)
