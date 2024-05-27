@@ -1,15 +1,11 @@
 // @ts-nocheck
 import mongoose from 'mongoose'
-
 import { Wine } from '.'
-
 
 mongoose.connect('mongodb://localhost:27017/project')
     .then(() => Wine.deleteMany())
         .then(() =>
             Promise.all([
-   
-
             Wine.create({ image: `https://images2.imgbox.com/bc/9b/XvaxUUNp_o.png`, title: 'White Garnache', description: 'jasmine, lemon and sweet cotton notes', type: 'white', price: 3, rates: [3] }),
             Wine.create({ image: `https://images2.imgbox.com/bc/9b/XvaxUUNp_o.png`, title: 'Snow White', description: 'natural wine, drops of cherry and peach', type: 'white', price: 4, rates: [3.5] }),
             Wine.create({ image: `https://images2.imgbox.com/bc/9b/XvaxUUNp_o.png`, title: 'Blanco de Nieves', description: '3 months barrica, strong body and dense', type: 'white', price: 5, rates: [4] }),
@@ -36,7 +32,6 @@ mongoose.connect('mongodb://localhost:27017/project')
             // Wine.create({ image: `https://images2.imgbox.com/c5/a2/6JaotefB_o.png`, title: 'Cherry Lips', description: 'intense and dry', type: 'pink', price: 7, rates: [3.9] }),
             // Wine.create({ image: `https://images2.imgbox.com/c5/a2/6JaotefB_o.png`, title: 'Chic Rosé', description: 'rose, lemon and sweet cotton notes', type: 'pink', price: 10, rates: [4.5] }),
             // Wine.create({ image: `https://images2.imgbox.com/c5/a2/6JaotefB_o.png`, title: 'Pink Bubbles', description: 'cherry, lemon and dry cotton notes', type: 'pink', price: 12, rates: [4.6] }),
-    
             ])
 
         )

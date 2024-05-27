@@ -1,8 +1,6 @@
 // __@ts-nocheck
 import mongoose, { ObjectId } from 'mongoose'
-
 const { Schema, model } = mongoose
-
 const { Types: { ObjectId } } = Schema
 
 type UserType = {
@@ -28,31 +26,25 @@ const user = new Schema<UserType> ({
 })
 
 type ReviewType = {
-    
     user: ObjectId
     comment: string
     createdAt: Date
 }
 
 const review = new Schema<ReviewType>({
-    
     user: {
         type: ObjectId,
         required: true,
         ref: 'User'
     },
-    
     comment: {
         type: String,
         required: true
     },
-
     createdAt: {
         type: Date,
         default: Date.now,
       },
-
-
 })
 
 type WineType = {
@@ -166,7 +158,6 @@ const market = new Schema<MarketType> ({
         required: true,
         coordinates: { type: [Number], default: [0, 0] }
     },
-    
     wines: [{
         type: ObjectId,
         ref: 'Wine'
