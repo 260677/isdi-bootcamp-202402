@@ -45,7 +45,7 @@ describe('authenticateUser', () => {
             })
     )
 
-    // TODO add other unhappy test cases
+    
 
     after(() => mongoose.disconnect())
 })

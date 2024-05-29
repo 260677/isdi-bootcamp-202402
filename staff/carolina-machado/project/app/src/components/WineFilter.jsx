@@ -13,7 +13,7 @@ function WineFilter({ coordinates, userId }) {
   const [isPressed250, setIsPressed250] = useState(false)
   const [isPressed500, setIsPressed500] = useState(false)
   const [isPressed750, setIsPressed750] = useState(false)
-  const [isPressed1km, setIsPressed1km] = useState(false)
+  const [isPressed1000, setIsPressed1000] = useState(false)
   const [isPressedWhite, setIsPressedWhite] = useState(false)
   const [isPressedRed, setIsPressedRed] = useState(false)
   const [isPressedPink, setIsPressedPink] = useState(false)
@@ -36,25 +36,25 @@ function WineFilter({ coordinates, userId }) {
         setIsPressed250(true)
         setIsPressed500(false)
         setIsPressed750(false)
-        setIsPressed1km(false)
+        setIsPressed1000(false)
         break
       case '500':
         setIsPressed250(false)
         setIsPressed500(true)
         setIsPressed750(false)
-        setIsPressed1km(false)
+        setIsPressed1000(false)
         break
       case '750':
         setIsPressed250(false)
         setIsPressed500(false)
         setIsPressed750(true)
-        setIsPressed1km(false)
+        setIsPressed1000(false)
         break
-      case '1km':
+      case '1000':
         setIsPressed250(false)
         setIsPressed500(false)
         setIsPressed750(false)
-        setIsPressed1km(true)
+        setIsPressed1000(true)
         break
       default:
         setProximityRange(1000)
@@ -132,10 +132,6 @@ function WineFilter({ coordinates, userId }) {
     setExpandedWine({ wineId, marketId, market, wine })
   }
 
-  useEffect(() => {
-    console.log('Expanded Wine:', expandedWine)
-  }, [expandedWine])
-
   return (
 
     <>
@@ -168,7 +164,7 @@ function WineFilter({ coordinates, userId }) {
         </button>
 
         <button
-          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed1km ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
+          className={`py-2 px-8 text-fuchsia-800 font-semibold mb-2 mt-4 w-16 h-16 rounded-full bg-fucs-500 border-none cursor-pointer shadow-sm shadow-fuchsia-700 antialiased flex items-center justify-center ${isPressed1000 ? 'bg-fuchsia-200' : 'bg-white hover:bg-fuchsia-200'}`}
           onClick={() => handleProximityChange('1000')}
         >
           1km

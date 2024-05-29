@@ -1,14 +1,14 @@
-import React from 'react';
-import Map from './Map';
-import WineRating from './WineRating';
+import React from 'react'
+import Map from './Map'
+import WineRating from './WineRating'
 
 function formatHours(hours) {
-  const openingTime = hours[0].open;
-  const closingTime = hours[0].close;
-  const firstDay = hours[0].day;
-  const lastDay = hours[hours.length - 1].day;
+  const openingTime = hours[0].open
+  const closingTime = hours[0].close
+  const firstDay = hours[0].day
+  const lastDay = hours[hours.length - 1].day
 
-  return `${firstDay} to ${lastDay}, ${openingTime} to ${closingTime}`;
+  return `${firstDay} to ${lastDay}, ${openingTime} to ${closingTime}`
 }
 
 function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine, userId }) {
@@ -19,8 +19,8 @@ function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine,
           filteredWines.markets.map((market) => (
             <React.Fragment key={market.id}>
               {market.wines.map((wineId) => {
-                const wine = filteredWines.wines.find((w) => w.id === wineId);
-                const isExpanded = expandedWine && expandedWine.wineId === wine.id && expandedWine.marketId === market.id;
+                const wine = filteredWines.wines.find((w) => w.id === wineId)
+                const isExpanded = expandedWine && expandedWine.wineId === wine.id && expandedWine.marketId === market.id
 
                 return (
                   <React.Fragment key={`${market.id}-${wine.id}`}>
@@ -28,11 +28,11 @@ function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine,
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        toggleExpanded(wine.id, market.id);
+                        toggleExpanded(wine.id, market.id)
                       }}
                     >
                       <li className={`flex items-center mt-16 mb-16 p-50px ${isExpanded ? 'expanded' : ''}`}>
-                        {/* Render the non-expanded content */}
+                       
                         {!isExpanded && (
                           <>
                             <div>
@@ -50,7 +50,7 @@ function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine,
                         )}
                       </li>
                     </a>
-                    {/* Render the expanded content */}
+                   
                     {isExpanded && (
                       <li className="flex items-center justify-center ml-4 mr-4 mb-4">
                         <div className="expanded-detail-content transition delay-1000 duration-1000 ease-in-out">
@@ -86,13 +86,13 @@ function RenderWines({ renderStars, toggleExpanded, filteredWines, expandedWine,
                       </div>
                     )}
                   </React.Fragment>
-                );
+                )
               })}
             </React.Fragment>
           ))}
       </ul>
     </div>
-  );
+  )
 }
 
-export default RenderWines;
+export default RenderWines

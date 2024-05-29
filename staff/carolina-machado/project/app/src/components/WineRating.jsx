@@ -72,7 +72,7 @@ function WineRating({ wineId, expandedWine, userId }) {
       })
   }
 
-  
+
 
   const fetchComments = () => {
     retrieveReviews(wineId)
@@ -87,7 +87,7 @@ function WineRating({ wineId, expandedWine, userId }) {
    useEffect(() => {
     console.log('wineData:', wineData)
   }, [wineData])
- 
+
 
   const handleSubmittedComment = () => {
     setIsSubmitting(true)
@@ -119,7 +119,7 @@ function WineRating({ wineId, expandedWine, userId }) {
     <div>
       <br/>
       <p className='font-bold'>Help WineSeeker to improve!</p>
-      
+
       <div>
       <span className="text-yellow-700 text-ml font-bold italic cursor-pointer block " onClick={handleClick}>
         Rate the wine! ⭐️
@@ -171,7 +171,7 @@ function WineRating({ wineId, expandedWine, userId }) {
               <img src={expandedWine.wine.image} alt="wine image" />
             </div>
             <div className="mb-4">
-              <WineComment comments={wineData.comments || []} userDetails={userDetails} />
+              <WineComment comments={wineData.comments || []} userDetails={userDetails} wineId={wineId} userId={userId} userName={wineData.comments.name}/>
             </div>
             <div>
               <textarea

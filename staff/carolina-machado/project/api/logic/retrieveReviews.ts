@@ -4,9 +4,10 @@ import { validate, errors } from 'com'
 const { NotFoundError, SystemError } = errors
 
 async function retrieveReviews(wineId: string): Promise<[]> {
-  try {
-    validate.text(wineId, 'wineId', true)
+  validate.text(wineId, 'wineId', true)
 
+  try {
+    
     const wine = await Wine.findById(wineId).exec()
 
     if (!wine) {
@@ -43,15 +44,15 @@ async function retrieveReviews(wineId: string): Promise<[]> {
       })
     )
 
-    // Filter out null comments
+    
     const filteredComments = comments.filter(comment => comment !== null)
     
     console.log('Filtered Comments array:', filteredComments)
     
     return filteredComments
+    
   } catch (error) {
-    console.error('Error fetching comments:', error)
-    throw error instanceof NotFoundError ? error : new SystemError('An error occurred while fetching comments')
+    throw new SystemError('Error retrieving review: ' + error.message)
   }
 }
 export default retrieveReviews

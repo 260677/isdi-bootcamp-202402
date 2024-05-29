@@ -8,12 +8,8 @@ import tracer from 'tracer'
 import colors from 'colors'
 import jwt from 'jsonwebtoken'
 import cors from 'cors'
-import findWinesAndMarkets from './logic/findWinesAndMarkets.ts'
-import retrieveWineById from './logic/retrieveWinebyId.ts'
-import addNewRating from './logic/addNewRating.ts'
-import addNewReview from './logic/addNewReview.ts'
-import retrieveUserWithId from './logic/retrieveUserWithId.ts'
-import retrieveReviews from './logic/retrieveReviews.ts'
+
+
 
 dotenv.config()
 
@@ -143,21 +139,19 @@ mongoose.connect(MONGODB_URL)
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
-
                     res.status(406).json({ error: error.constructor.name, message: error.message })
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
-
                     res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
                     logger.warn(error.message)
-
                     res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
         api.get('/wines', async (req, res) => {
+
             try {
                 const { authorization } = req.headers
 
@@ -171,9 +165,7 @@ mongoose.connect(MONGODB_URL)
                 const maxPrice = parseFloat(req.query.maxPrice)
                 const type = req.query.type
 
-
-                const result = await findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type)
-
+                const result = await logic.findWinesAndMarkets(userId, location, proximity, minPrice, maxPrice, type)
 
                 console.log('Result API:', result)
 
@@ -182,7 +174,6 @@ mongoose.connect(MONGODB_URL)
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
-
                     res.status(406).json({ error: error.constructor.name, message: error.message })
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
@@ -195,74 +186,73 @@ mongoose.connect(MONGODB_URL)
         })
 
         api.post('/wines/:wineId/rate', jsonBodyParser, async (req, res) => {
+
             try {
                 const { wineId } = req.params
                 const { rating } = req.body
 
                 console.log('Received Rating:', rating)
 
-                const newAverageRating = await addNewRating(wineId, rating)
+                const newAverageRating = await logic.addNewRating(wineId, rating)
 
                 res.json({ message: 'Rating updated successfully', newAverageRating })
+
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
-
                     res.status(406).json({ error: error.constructor.name, message: error.message })
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
-
                     res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
                     logger.warn(error.message)
-
                     res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
         api.get('/wines/:wineId', async (req, res) => {
+
             try {
                 const { wineId } = req.params
 
-                const wine = await retrieveWineById(wineId)
-                res.json(wine);
+                const wine = await logic.retrieveWineById(wineId)
+                res.json(wine)
+
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
-
                     res.status(406).json({ error: error.constructor.name, message: error.message })
                 } else if (error instanceof TokenExpiredError) {
                     logger.warn(error.message)
-
                     res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
                 } else {
                     logger.warn(error.message)
-
                     res.status(500).json({ error: SystemError.name, message: error.message })
                 }
             }
         })
 
         api.post('/wines/:wineId/reviews', jsonBodyParser, async (req, res) => {
-            const { userId, comment } = req.body;
-            const { wineId } = req.params;
-        
-            // Trim the comment to remove leading and trailing spaces
-            const trimmedComment = comment.trim();
-        
-      
+
+            const { userId, comment } = req.body
+            const { wineId } = req.params
+
+
+            const trimmedComment = comment.trim()
+
+
             if (!trimmedComment) {
                 res.status(406).json({ error: 'ContentError', message: 'Comment cannot be empty or contain only spaces' });
-                return;
+                return
             }
-        
-            console.log('Request body:', req.body);
-            console.log('userId:', userId);
-            console.log('comment:', trimmedComment);
-        
+
+            console.log('Request body:', req.body)
+            console.log('userId:', userId)
+            console.log('comment:', trimmedComment)
+
             try {
-                const newReview = await addNewReview(userId, wineId, trimmedComment)
+                const newReview = await logic.addNewReview(userId, wineId, trimmedComment)
                 res.status(201).json(newReview);
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
@@ -279,11 +269,13 @@ mongoose.connect(MONGODB_URL)
         })
 
         api.get('/users/:userId/:targetUserId', async (req, res) => {
+
             const { userId, targetUserId } = req.params
 
             try {
-                const user = await retrieveUserWithId(userId, targetUserId)
-                res.status(200).json(user);
+                const user = await logic.retrieveUserWithId(userId, targetUserId)
+                res.status(200).json(user)
+
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)
@@ -300,15 +292,71 @@ mongoose.connect(MONGODB_URL)
 
         api.get('/wines/:wineId/reviews', async (req, res) => {
             try {
-              const { wineId } = req.params;
-              const reviews = await retrieveReviews(wineId)
-              res.json(reviews);
+                const { wineId } = req.params;
+                const reviews = await logic.retrieveReviews(wineId)
+                res.json(reviews);
+
+
             } catch (error) {
-              console.error('Failed to fetch comments:', error)
-              res.status(500).json({ error: 'Failed to fetch comments' })
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+                    res.status(498).json({ error: UnauthorizedError.name, message: 'session expired' })
+                } else {
+                    logger.warn(error.message)
+                    res.status(500).json({ error: SystemError.name, message: error.message })
+                }
             }
-          })
-          
+        })
+
+
+        api.put('/wines/:wineId/reviews/:reviewId', jsonBodyParser, async (req, res) => {
+            const { wineId, reviewId } = req.params
+            const { comment, userId } = req.body
+            const decodedComment = decodeURIComponent(comment) // Decode the comment
+
+            console.log('enco', decodedComment)
+
+            try {
+                // Use editReview with decodedComment
+                const updatedReview = await logic.editReview(reviewId, userId, wineId, decodedComment)
+                res.status(200).json(updatedReview)
+            } catch (error) {
+                if (error instanceof TypeError || error instanceof ContentError) {
+                    logger.warn(error.message)
+                    res.status(406).json({ error: error.constructor.name, message: error.message })
+                } else if (error instanceof TokenExpiredError) {
+                    logger.warn(error.message)
+                    res.status(498).json({ error: 'UnauthorizedError', message: 'session expired' })
+                } else {
+                    logger.warn(error.message)
+                    res.status(500).json({ error: 'SystemError', message: error.message })
+                }
+            }
+        })
+
+
+        /* api.delete('/:reviewId', async (req, res) => {
+
+            const { reviewId } = req.params
+
+            try {
+                const result = await logic.deleteReview(reviewId)
+
+                res.status(200).json(result)
+            } catch (error) {
+                if (error instanceof NotFoundError) {
+                    res.status(404).json({ error: 'Review not found', message: error.message })
+                } else if (error instanceof SystemError) {
+                    res.status(500).json({ error: 'Internal Server Error', message: error.message })
+                } else {
+                    console.error('Unexpected error:', error);
+                    res.status(500).json({ error: 'Unexpected Error', message: 'An unexpected error occurred' })
+                }
+            }
+        }) */
 
         api.listen(PORT, () => logger.info(`API listening on port ${PORT}`))
     })

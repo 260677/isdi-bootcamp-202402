@@ -19,14 +19,14 @@ import { errors } from 'com'
 const { UnauthorizedError } = errors
 
 function App() {
-  const token = sessionStorage.getItem('token');
-  let userId = null;
+  const token = sessionStorage.getItem('token')
+  let userId = null
 
   if (token) {
-    const [, payloadB64] = token.split('.');
-    const payloadJSON = atob(payloadB64);
-    const payload = JSON.parse(payloadJSON);
-    userId = payload.sub; // Assuming 'sub' contains the userId in your payload
+    const [, payloadB64] = token.split('.')
+    const payloadJSON = atob(payloadB64)
+    const payload = JSON.parse(payloadJSON)
+    userId = payload.sub
   }
 
 

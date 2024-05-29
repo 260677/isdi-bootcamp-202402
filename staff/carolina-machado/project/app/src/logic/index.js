@@ -10,6 +10,8 @@ import addNewRating from './addNewRating'
 import retrieveUserWithId from './retrieveUserWithId'
 import retrieveReviews from './retrieveReviews'
 import addNewReview from './addNewReview'
+import editReview from './editReview'
+
 
 const logic = {
 
@@ -24,7 +26,9 @@ const logic = {
     addNewRating,
     retrieveUserWithId,
     retrieveReviews,
-    addNewReview
+    addNewReview,
+    editReview,
+    
     
 
 

@@ -4,7 +4,7 @@ import { validate, errors } from 'com'
 function retrieveWines() {
     validate.token(sessionStorage.token)
 
-    //logic
+    
     return fetch(`${import.meta.env.VITE_API_URL}/wines`, {
     headers: {
             'Authorization': `Bearer ${sessionStorage.token}`

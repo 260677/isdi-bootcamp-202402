@@ -24,7 +24,7 @@ type Market = {
 }
 
 function findWinesAndMarkets(userId: string, location: [number, number], proximity: number = 1000, minPrice: number = 3, maxPrice: number = 10, type?: string ): Promise<{ wines: [ObjectId], markets: [ObjectId] }> {
-    validate.text(userId, 'userId', true);
+    validate.text(userId, 'userId', true)
     for (let i = 0; i < location.length; i++) {
         if (!Array.isArray(location) || location.length !== 2 || location.some(coord => typeof coord !== 'number')) {
             throw new TypeError('location should be an array of two numbers')
@@ -97,9 +97,8 @@ function findWinesAndMarkets(userId: string, location: [number, number], proximi
             delete wine._id
         })
 
-       
-
         return { markets, wines }
+        
     })()
 }
 
