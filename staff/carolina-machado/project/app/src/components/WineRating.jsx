@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import addNewRating from '../logic/addNewRating'
-import addNewReview from '../logic/addNewReview'
-import retrieveUserWithId from '../logic/retrieveUserWithId'
-import retrieveReviews from '../logic/retrieveReviews'
 import WineComment from './WineComment'
+import logic from '../logic'
 
 
 
@@ -20,7 +17,7 @@ function WineRating({ wineId, expandedWine, userId }) {
 
   useEffect(() => {
     if (userId) {
-      retrieveUserWithId(userId)
+      logic.retrieveUserWithId(userId)
         .then(data => {
           setUserDetails(data)
         })
@@ -55,7 +52,7 @@ function WineRating({ wineId, expandedWine, userId }) {
 
   const handleSubmitRating = () => {
     setIsSubmitting(true)
-    addNewRating(userRating, wineId)
+    logic.addNewRating(userRating, wineId)
       .then(data => {
         setMessage('Rating submitted successfully!')
         setWineData(prevData => ({ ...prevData, averageRating: data.newAverageRating }))
@@ -75,7 +72,7 @@ function WineRating({ wineId, expandedWine, userId }) {
 
 
   const fetchComments = () => {
-    retrieveReviews(wineId)
+    logic.retrieveReviews(wineId)
       .then(data => {
         setWineData(prevData => ({ ...prevData, comments: data || [] }))
       })
@@ -84,7 +81,7 @@ function WineRating({ wineId, expandedWine, userId }) {
       })
   }
 
-   useEffect(() => {
+  useEffect(() => {
     console.log('wineData:', wineData)
   }, [wineData])
 
@@ -92,7 +89,7 @@ function WineRating({ wineId, expandedWine, userId }) {
   const handleSubmittedComment = () => {
     setIsSubmitting(true)
     const trimmedComment = wineComment.trim()
-    addNewReview(trimmedComment, wineId, userId)
+    logic.addNewReview(trimmedComment, wineId, userId)
       .then(data => {
         setMessage('Comment submitted successfully!')
         setCloseAfterSubmit(true);
@@ -117,19 +114,19 @@ function WineRating({ wineId, expandedWine, userId }) {
 
   return (
     <div>
-      <br/>
+      <br />
       <p className='font-bold'>Help WineSeeker to improve!</p>
 
       <div>
-      <span className="text-yellow-700 text-ml font-bold italic cursor-pointer block " onClick={handleClick}>
-        Rate the wine! ⭐️
-      </span>
-      <span className="text-yellow-700 text-ml font-bold italic cursor-pointer block mb-4 " onClick={handleCommentClick}>
-        Read or leave reviews! 🖋️
-      </span>
+        <span className="text-yellow-700 text-ml font-bold italic cursor-pointer block " onClick={handleClick}>
+          Rate the wine! ⭐️
+        </span>
+        <span className="text-yellow-700 text-ml font-bold italic cursor-pointer block mb-4 " onClick={handleCommentClick}>
+          Read or leave reviews! 🖋️
+        </span>
       </div>
       <div className="mt-4">
-      {message && <p className="mt-4 mb-4 text-center font-bold ">{message}</p>}
+        {message && <p className="mt-4 mb-4 text-center font-bold ">{message}</p>}
       </div>
       {showPopUp && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
@@ -163,7 +160,7 @@ function WineRating({ wineId, expandedWine, userId }) {
           <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-lg">
             <div className="flex justify-center">
               <h2 className="text-xl font-bold mb-4">{expandedWine.wine.title}</h2>
-              </div>
+            </div>
             <div className="flex justify-center">
               <h2 className="italic font-thin mb-4">{expandedWine.wine.description}</h2>
             </div>
@@ -171,7 +168,7 @@ function WineRating({ wineId, expandedWine, userId }) {
               <img src={expandedWine.wine.image} alt="wine image" />
             </div>
             <div className="mb-4">
-              <WineComment comments={wineData.comments || []} userDetails={userDetails} wineId={wineId} userId={userId} userName={wineData.comments.name}/>
+              <WineComment comments={wineData.comments || []} userDetails={userDetails} wineId={wineId} userId={userId} userName={wineData.comments.name} />
             </div>
             <div>
               <textarea

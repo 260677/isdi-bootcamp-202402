@@ -14,16 +14,22 @@ function retrieveReviews(wineId) {
   })
   .then(res => {
     if (res.ok) {
-      return res.json().then(data => data)
+      return res.json().then(data => {
+        // Decode the comments before returning them
+        return data.map(item => {
+          return {
+            ...item,
+            comment: decodeURIComponent(item.comment)
+          }
+        })
+      })
     }
-
     return res.json().then(body => {
       const { error, message } = body
       const constructor = errors[error]
       throw new constructor(message)
     })
   })
-  
 }
 
 export default retrieveReviews

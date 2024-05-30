@@ -18,7 +18,8 @@
     "populate-condis": "tsx data/populate-condis.ts",
     "populate-market-condis": "tsx data/populate-market-condis.ts",
     "populate-markets-final": "tsx data/populate-markets-final.ts",
-    "populate-wines-final": "tsx data/populate-wines-final.ts"
+    "populate-wines-final": "tsx data/populate-wines-final.ts",
+    "populate-fake-hours": "tsx data/populate-fake-hours.ts"
   },
   "keywords": [],
   "author": "",

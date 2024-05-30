@@ -3,56 +3,49 @@ import { Wine, Review } from '../data/index.ts'
 import { validate, errors } from 'com'
 const { NotFoundError, SystemError } = errors
 
-async function retrieveReviews(wineId: string): Promise<[]> {
-  validate.text(wineId, 'wineId', true)
+function retrieveReviews(wineId: string): Promise<{ _id: string; comment: string; user: { name: string }; date: string }[]> {
+    validate.text(wineId, 'wineId', true)
 
-  try {
-    
-    const wine = await Wine.findById(wineId).exec()
+    return Wine.findById(wineId).exec()
+        .then(wine => {
+            if (!wine) {
+                throw new NotFoundError('Wine not found');
+            }
 
-    if (!wine) {
-      throw new NotFoundError('Wine not found')
-    }
+            return Promise.all(
+                wine.comments.map(commentId =>
+                    Review.findById(commentId).populate('user', 'name').exec()
+                )
+            )
+        })
+        .then(comments => {
+            const filteredComments = comments
+                .filter(comment => comment !== null)
+                .map(comment => ({
+                    _id: comment._id.toString(),
+                    comment: comment ? comment.comment : 'No comment available',
+                    user: {
+                        name: comment.user ? comment.user.name : 'Unknown User'
+                    },
+                    date: new Date(comment.createdAt).toLocaleDateString()
+                }));
 
-    console.log('Wine object:', wine)
-
-    const comments = await Promise.all(
-      wine.comments.map(async (commentId: string) => {
-        console.log('Comment ID:', commentId);
-    
-        const comment = await Review.findById(commentId).populate('user', 'name').exec()
-    
-        console.log('Comment object:', comment)
-    
-        if (!comment) {
-          return null; // Skip processing if comment is null
-        }
-    
-        const userName = comment.user ? comment.user.name : 'Unknown User'
-    
-        const isoDate = new Date(comment.createdAt)
-        const formattedDate = `${isoDate.getDate()}/${isoDate.getMonth() + 1}/${isoDate.getFullYear()}`
-    
-        return {
-          _id: commentId,
-          comment: comment ? comment.comment : 'No comment available',
-          user: {
-            name: userName,
-          },
-          date: formattedDate
-        }
-      })
-    )
-
-    
-    const filteredComments = comments.filter(comment => comment !== null)
-    
-    console.log('Filtered Comments array:', filteredComments)
-    
-    return filteredComments
-    
-  } catch (error) {
-    throw new SystemError('Error retrieving review: ' + error.message)
-  }
+            return filteredComments
+        })
+        .then(filteredComments => {
+            // Sanitize the comments by removing any sensitive information
+            return filteredComments.map(comment => ({
+                _id: comment._id,
+                comment: comment.comment,
+                user: {
+                    name: comment.user.name
+                },
+                date: comment.date
+            }))
+        })
+        .catch(error => {
+            throw new SystemError('Error retrieving review: ' + error.message)
+        })
 }
+
 export default retrieveReviews

@@ -234,26 +234,26 @@ mongoose.connect(MONGODB_URL)
         })
 
         api.post('/wines/:wineId/reviews', jsonBodyParser, async (req, res) => {
-
             const { userId, comment } = req.body
             const { wineId } = req.params
-
-
+        
+            // Trim the comment to ensure it's not empty or just spaces
             const trimmedComment = comment.trim()
-
-
+        
             if (!trimmedComment) {
-                res.status(406).json({ error: 'ContentError', message: 'Comment cannot be empty or contain only spaces' });
+                res.status(406).json({ error: 'ContentError', message: 'Comment cannot be empty or contain only spaces' })
                 return
             }
-
+        
+            // Logging the request details
             console.log('Request body:', req.body)
+            console.log('wineId:', wineId)
             console.log('userId:', userId)
             console.log('comment:', trimmedComment)
-
+        
             try {
                 const newReview = await logic.addNewReview(userId, wineId, trimmedComment)
-                res.status(201).json(newReview);
+                res.status(201).json(newReview)
             } catch (error) {
                 if (error instanceof TypeError || error instanceof ContentError) {
                     logger.warn(error.message)

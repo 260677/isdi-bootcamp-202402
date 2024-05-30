@@ -21,6 +21,8 @@ mongoose.connect('mongodb://localhost:27017/project')
         const point17 = new Point({ type: 'Point', coordinates: [41.403099, 2.203008] })
         const point18 = new Point({ type: 'Point', coordinates: [41.4021816, 2.2056232] })
         const point19 = new Point({ type: 'Point', coordinates: [41.403412,2.2024036] })
+        const point20 = new Point({ type: 'Point', coordinates: [41.403099, 2.203008] })
+        const point21 = new Point({ type: 'Point', coordinates: [41.4016842,2.2051857] })
 
 
         return Promise.all([
@@ -202,6 +204,47 @@ mongoose.connect('mongodb://localhost:27017/project')
                     { day: 'Friday', open: '09:00', close: '18:00' },
                     { day: 'Saturday', open: '09:00', close: '18:00' },
 
+                ]
+            }),
+            Market.create({
+                title: 'All Day & Night Bilbao',
+                address: 'Calle Bilbao, 30',
+                location: point20,
+                wines: [
+                    '66537c8942940b230f03ca2b',
+                    '66537c8942940b230f03ca29',
+                    '66545e3ad9a2652a9153d6f5',
+                    '66545e3ad9a2652a9153d6ef'
+                ],
+                hours: [
+                    { day: 'Monday', open: '09:00', close: '04:00' },
+                    { day: 'Tuesday', open: '09:00', close: '04:00' },
+                    { day: 'Wednesday', open: '09:00', close: '04:00' },
+                    { day: 'Thursday', open: '09:00', close: '04:00' },
+                    { day: 'Friday', open: '09:00', close: '04:00' },
+                    { day: 'Saturday', open: '09:00', close: '04:00' },
+                   
+                ]
+            }),
+            Market.create({
+                title: 'Only Afternoon Lope de Vega',
+                address: 'Calle Lope de Vega, 30',
+                location: point21,
+                wines: [
+                    '66545e3ad9a2652a9153d6dd',
+                    '66545e3ad9a2652a9153d6c7',
+                    '66545e3ad9a2652a9153d6f5',
+                    '66545e3ad9a2652a9153d6e5',
+                    '66545e3ad9a2652a9153d6c5'
+                ],
+                hours: [
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                    { day: 'Monday', open: '14:30', close: '17:00' },
+                   
                 ]
             })
         ])

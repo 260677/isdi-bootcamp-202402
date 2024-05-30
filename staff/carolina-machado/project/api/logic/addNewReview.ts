@@ -5,29 +5,45 @@ import { validate, errors } from 'com'
 const { SystemError } = errors
 
 function addNewReview(userId, wineId, comment): Promise<any> {
-  validate.text(userId, 'userId', true)
-  validate.text(wineId, 'wineId', true)
-  validate.text(comment, 'comment', true)
+    validate.text(userId, 'userId', true)
+    validate.text(wineId, 'wineId', true)
+    validate.text(comment, 'comment', true)
 
-  // Decode the comment before saving it to the database
-  const decodedComment = decodeURIComponent(comment)
+    const decodedComment = decodeURIComponent(comment)
 
-  return (async () => {
-    try {
-      const newReview = new Review({ user: userId, wine: wineId, comment: decodedComment })
-      await newReview.save()
-
-      await Wine.findByIdAndUpdate(wineId, {
-        $push: { comments: newReview._id },
-      })
-
-      return newReview
-
-    } catch (error) {
-      throw new SystemError('Error creating new review: ' + error.message)
-    }
-  })()
-
+    return Review.create({ user: userId, wine: wineId, comment: decodedComment })
+        .then(newReview => {
+            if (!newReview) {
+                throw new SystemError('Review creation failed')
+            }
+            console.log('New Review:', newReview)
+            return Wine.findByIdAndUpdate(
+                wineId,
+                { $push: { comments: newReview._id } },
+                { new: true }
+            ).then(updatedWine => {
+                if (!updatedWine) {
+                    throw new SystemError('Wine update failed')
+                }
+                console.log('Updated Wine:', updatedWine)
+                return newReview
+            })
+        })
+        .then(newReview => {
+            // Sanitize the response
+            const sanitizedReview = {
+              _id: newReview._id ? newReview._id.toString() : 'undefined',
+              user: newReview.user ? newReview.user.toString() : 'undefined',
+              wine: newReview.wine ? newReview.wine.toString() : 'undefined',
+              comment: newReview.comment
+            }
+            console.log('Sanitized Review:', sanitizedReview)
+            return sanitizedReview
+        })
+        .catch(error => {
+            console.log('Error details:', error) // Log error details
+            throw new SystemError('Error creating new review: ' + error.message)
+        })
 }
 
 export default addNewReview
